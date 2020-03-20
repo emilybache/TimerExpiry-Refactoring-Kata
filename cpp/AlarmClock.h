@@ -65,7 +65,7 @@ bool test_and_clear_op_flag(alarm_config *pAlarmConfig, unsigned int flag);
 // The parameter 'now_sec' is the current time (in seconds since the epoch)
 // The parameter 'alarmConfig' is the alarm clock configuration
 void
-how_long_until_the_next_alarm(alarm_config* alarmConfig, const unsigned int now_sec, long* min_value_ms)
+how_long_until_the_next_alarm(alarm_config* alarmConfig, const unsigned int now_sec, unsigned long *min_value_ms)
 {
     unsigned int time_sec;
     unsigned int diff_sec;

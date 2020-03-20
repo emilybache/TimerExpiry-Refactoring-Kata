@@ -1,7 +1,7 @@
-Validate and Add Product Refactoring Kata - C++ version
-========================================================
+AlarmClock Refactoring Kata - C++ version
+==============================================
 
-See the [top level readme](https://github.com/emilybache/ValidateAndAddProduct-Refactoring-Kata) for general information about this exercise.
+See the [top level readme](https://github.com/emilybache/AlarmClock-Refactoring-Kata) for general information about this exercise.
 
 ## Dependencies
 
