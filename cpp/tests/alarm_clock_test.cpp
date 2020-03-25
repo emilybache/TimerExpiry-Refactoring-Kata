@@ -1,13 +1,15 @@
-#include <AlarmClock.h>
 #include <climits>
 
 #include "catch2/catch.hpp"
 #include "ApprovalTests.hpp"
 #include <string>
 
-namespace std {
+extern "C"
+{
+#include "../alarm_clock.h"
+}
 
-    string describeResult(unsigned long min_value_ms, const string &description);
+namespace std {
 
     TEST_CASE ("how_long_until_the_next_alarm") {
 

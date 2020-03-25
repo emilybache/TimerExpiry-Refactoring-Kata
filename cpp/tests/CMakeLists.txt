@@ -1,7 +1,7 @@
 project(tests)
 
 add_executable(${PROJECT_NAME}
-        main.cpp ../AlarmClock.h alarm_clock_test.cpp)
+        main.cpp alarm_clock_test.cpp ../alarm_clock.h ../alarm_clock.c)
 
 target_include_directories(
         ${PROJECT_NAME}
