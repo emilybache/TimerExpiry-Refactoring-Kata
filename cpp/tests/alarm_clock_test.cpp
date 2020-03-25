@@ -27,10 +27,10 @@ namespace std {
         }
         SECTION("idt_alarm")
         {
-            config->timers->duration->meas_active = true;
-            config->timers->duration->meas_start = 50;
-            config->idt_alarm_time = 190;
-            config->last_pkt = 75;
+            set_duration_meas_active(config, true);
+            set_duration_meas_start(config, 50);
+            set_idt_alarm_time(config, 190);
+            set_last_pkt_time(config, 75);
 
             how_long_until_the_next_alarm(config, now_sec, &min_value_ms);
 
@@ -39,12 +39,12 @@ namespace std {
 
         SECTION("P88N")
         {
-            config->timers->duration->meas_active = true;
-            config->reporting_flags += ZJ77_REPORTING_TRIGGERS_P88N;
-            config->time_threshold = 10;
-            config->timers->duration->meas = 1;
-            config->timers->duration->meas_start = now_sec;
-            config->timers->duration->meas_threshold_used = 3;
+            set_duration_meas_active(config, true);
+            add_reporting_flag(config, ZJ77_REPORTING_TRIGGERS_P88N);
+            set_time_threshold(config, 10);
+            set_duration_meas(config, 1);
+            set_duration_meas_start(config, now_sec);
+            set_duration_meas_threshold(config, 3);
 
             how_long_until_the_next_alarm(config, now_sec, &min_value_ms);
 
@@ -53,11 +53,11 @@ namespace std {
 
         SECTION("TIME_QUOTA")
         {
-            config->timers->duration->meas_active = true;
-            config->operational_flags += OPERATIONAL_FLAG_TIME_QUOTA_PRESENT;
-            config->time_quota = 10;
-            config->timers->duration->meas_start = now_sec;
-            config->timers->duration->meas = 1;
+            set_duration_meas_active(config, true);
+            add_operational_flag(config, OPERATIONAL_FLAG_TIME_QUOTA_PRESENT);
+            set_time_quota(config, 10);
+            set_duration_meas_start(config, now_sec);
+            set_duration_meas(config, 1);
 
             how_long_until_the_next_alarm(config, now_sec, &min_value_ms);
 
@@ -65,10 +65,10 @@ namespace std {
         }
         SECTION("ZB12")
         {
-            config->reporting_flags += ZJ77_REPORTING_TRIGGERS_ZB12;
-            config->operational_flags += OPERATIONAL_FLAG_ZB12_MODIFIED;
-            config->last_pkt = now_sec - 3;
-            config->timers->quota_holding_time = 10;
+            add_reporting_flag(config, ZJ77_REPORTING_TRIGGERS_ZB12);
+            add_operational_flag(config, OPERATIONAL_FLAG_ZB12_MODIFIED);
+            set_last_pkt_time(config, now_sec - 3);
+            set_quota_holding_time(config, 10);
 
             how_long_until_the_next_alarm(config, now_sec, &min_value_ms);
 
@@ -76,9 +76,9 @@ namespace std {
         }
         SECTION("ZB12 unmodified")
         {
-            config->reporting_flags += ZJ77_REPORTING_TRIGGERS_ZB12;
-            config->last_pkt = now_sec - 3;
-            config->timers->quota_holding_time = 10;
+            add_reporting_flag(config, ZJ77_REPORTING_TRIGGERS_ZB12);
+            set_last_pkt_time(config, now_sec - 3);
+            set_quota_holding_time(config, 10);
 
             how_long_until_the_next_alarm(config, now_sec, &min_value_ms);
 
@@ -86,9 +86,9 @@ namespace std {
         }
         SECTION("DY9Xd")
         {
-            config->reporting_flags = ZJ77_REPORTING_TRIGGERS_DY9X;
-            config->timers->meas_dy9xd = 5;
-            config->timers->periodic_meas_start = now_sec;
+            add_reporting_flag(config, ZJ77_REPORTING_TRIGGERS_DY9X);
+            set_meas_dy9xd(config, 5);
+            set_periodig_meas_start(config, now_sec);
 
             how_long_until_the_next_alarm(config, now_sec, &min_value_ms);
 
@@ -98,9 +98,9 @@ namespace std {
 
         SECTION("monitoring_time")
         {
-            config->last_pkt = 75;
-            config->timers->monitoring_time_ts = 130;
-            config->timers->monitoring_time_start = 99;
+            set_last_pkt_time(config, 75);
+            set_monitoring_time_ts(config, now_sec + 30);
+            set_monitoring_time_start(config, now_sec - 1);
 
             how_long_until_the_next_alarm(config, now_sec, &min_value_ms);
 

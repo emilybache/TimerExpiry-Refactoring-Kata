@@ -63,11 +63,27 @@ unsigned int get_reporting_flags(struct alarm_config *pAlarmConfig);
 unsigned int get_idt_alarm_time(struct alarm_config *pAlarmConfig);
 unsigned int get_time_threshold(struct alarm_config *pAlarmConfig);
 unsigned int get_time_quota(struct alarm_config *pAlarmConfig);
-
 unsigned int get_operational_flags(struct alarm_config* pAlarmConfig);
 bool duration_measurement_active(struct alarm_config* pAlarmConfig);
 bool get_operational_flag_state(struct alarm_config *pAlarmConfig, unsigned int flag);
 bool test_and_clear_op_flag(struct alarm_config *pAlarmConfig, unsigned int flag);
+
+
+void set_duration_meas_active(struct alarm_config *config, bool value);
+void set_duration_meas_start(struct alarm_config *config, unsigned int value);
+void set_idt_alarm_time(struct alarm_config *config, unsigned int value);
+void set_last_pkt_time(struct alarm_config *config, unsigned int value);
+void add_reporting_flag(struct alarm_config *config, unsigned int flag);
+void set_time_threshold(struct alarm_config *config, unsigned int value);
+void set_duration_meas_threshold(struct alarm_config *config, unsigned int value);
+void add_operational_flag(struct alarm_config *config, unsigned int flag);
+void set_time_quota(struct alarm_config *config, unsigned int value);
+void set_duration_meas(struct alarm_config *config, unsigned int value);
+void set_quota_holding_time(struct alarm_config *config, unsigned int value);
+void set_meas_dy9xd(struct alarm_config *config, unsigned int value);
+void set_periodig_meas_start(struct alarm_config *config, unsigned int value);
+void set_monitoring_time_ts(struct alarm_config *config, unsigned int value);
+void set_monitoring_time_start(struct alarm_config *config, unsigned int value);
 
 
 #endif //ALARMCLOCK_H

@@ -148,8 +148,52 @@ bool duration_measurement_active(struct alarm_config* pAlarmConfig)
     return pAlarmConfig->timers->duration->meas_active;
 }
 
-unsigned int get_operational_flags(struct alarm_config* pAlarmConfig)
-{
+unsigned int get_operational_flags(struct alarm_config* pAlarmConfig) {
     return pAlarmConfig->operational_flags;
+}
+void set_duration_meas_active(struct alarm_config *config, bool value) {
+    config->timers->duration->meas_active = true;
+}
+void set_duration_meas_start(struct alarm_config *config, unsigned int value) {
+    config->timers->duration->meas_start = value;
+}
+void set_idt_alarm_time(struct alarm_config *config, unsigned int value) {
+    config->idt_alarm_time = value;
+}
+void set_last_pkt_time(struct alarm_config *config, unsigned int value) {
+    config->last_pkt = value;
+}
+void add_reporting_flag(struct alarm_config *config, unsigned int flag) {
+    config->reporting_flags += flag;
+}
+void set_time_threshold(struct alarm_config *config, unsigned int value) {
+    config->time_threshold = value;
+}
+void set_duration_meas_threshold(struct alarm_config *config, unsigned int value) {
+    config->timers->duration->meas_threshold_used = value;
+}
+void add_operational_flag(struct alarm_config *config, unsigned int flag) {
+    config->operational_flags += flag;
+}
+void set_time_quota(struct alarm_config *config, unsigned int value) {
+    config->time_quota = value;
+}
+void set_duration_meas(struct alarm_config *config, unsigned int value) {
+    config->timers->duration->meas = value;
+}
+void set_quota_holding_time(struct alarm_config *config, unsigned int value) {
+    config->timers->quota_holding_time = value;
+}
+void set_meas_dy9xd(struct alarm_config *config, unsigned int value) {
+    config->timers->meas_dy9xd = value;
+}
+void set_periodig_meas_start(struct alarm_config *config, unsigned int value) {
+    config->timers->periodic_meas_start = value;
+}
+void set_monitoring_time_ts(struct alarm_config *config, unsigned int value) {
+    config->timers->monitoring_time_ts = value;
+}
+void set_monitoring_time_start(struct alarm_config *config, unsigned int value) {
+    config->timers->monitoring_time_start = value;
 }
 
