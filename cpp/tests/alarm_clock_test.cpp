@@ -51,6 +51,42 @@ namespace std {
             ApprovalTests::Approvals::verify(describeResult(min_value_ms, description));
         }
 
+        SECTION("TIME_QUOTA")
+        {
+            std::string description = "duration measurement active, TIME_QUOTA";
+            config->timers->duration->meas_active = true;
+            config->operational_flags += OPERATIONAL_FLAG_TIME_QUOTA_PRESENT;
+            config->time_quota = 10;
+            config->timers->duration->meas_start = now_sec;
+            config->timers->duration->meas = 1;
+
+            how_long_until_the_next_alarm(config, now_sec, &min_value_ms);
+
+            ApprovalTests::Approvals::verify(describeResult(min_value_ms, description));
+        }
+        SECTION("ZB12")
+        {
+            std::string description = "ZB12";
+            config->reporting_flags += ZJ77_REPORTING_TRIGGERS_ZB12;
+            config->operational_flags += OPERATIONAL_FLAG_ZB12_MODIFIED;
+            config->last_pkt = now_sec - 3;
+            config->timers->quota_holding_time = 10;
+
+            how_long_until_the_next_alarm(config, now_sec, &min_value_ms);
+
+            ApprovalTests::Approvals::verify(describeResult(min_value_ms, description));
+        }
+        SECTION("ZB12 unmodified")
+        {
+            std::string description = "ZB12 unmodified";
+            config->reporting_flags += ZJ77_REPORTING_TRIGGERS_ZB12;
+            config->last_pkt = now_sec - 3;
+            config->timers->quota_holding_time = 10;
+
+            how_long_until_the_next_alarm(config, now_sec, &min_value_ms);
+
+            ApprovalTests::Approvals::verify(describeResult(min_value_ms, description));
+        }
         SECTION("DY9Xd")
         {
             std::string description = "DY9Xd";
