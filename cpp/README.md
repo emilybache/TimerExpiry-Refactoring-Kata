@@ -9,5 +9,5 @@ The tests use the following header-only projects, which are in the `third_party`
 
 | Project | Licence |
 | --- | --- |
-| [doctest test framework](https://github.com/onqtam/doctest) | [MIT](https://github.com/onqtam/doctest/blob/master/LICENSE.txt) |
 | [ApprovalTests.cpp](https://github.com/approvals/ApprovalTests.cpp) | [Apache 2.0](https://github.com/approvals/ApprovalTests.cpp/blob/master/LICENSE) |
+| [catch2 test framework](https://github.com/catchorg/Catch2) | [Boost Software License 1.0](https://github.com/catchorg/Catch2/blob/master/LICENSE.txt) |
