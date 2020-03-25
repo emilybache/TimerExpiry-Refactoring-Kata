@@ -7,25 +7,24 @@
 
 namespace std {
 
-    alarm_config *getEmptyConfig();
-
     string describeResult(unsigned long min_value_ms, const string &description);
 
     TEST_CASE ("how_long_until_the_next_alarm") {
 
         unsigned int now_sec = 100; // 100 seconds since the epoch
         unsigned long min_value_ms = INT_MAX;
-        auto *config = getEmptyConfig();
+
+        auto *config = new alarm_config();
+        config->timers = new timers();
+        config->timers->duration = new duration();
 
         SECTION("no alarms set")
         {
-            const char *description = "no alarms set";
             how_long_until_the_next_alarm(config, now_sec, &min_value_ms);
-            ApprovalTests::Approvals::verify(describeResult(min_value_ms, description));
+            REQUIRE(min_value_ms == INT_MAX);
         }
         SECTION("idt_alarm")
         {
-            std::string description = "duration measurement active, idt_alarm_time set";
             config->timers->duration->meas_active = true;
             config->timers->duration->meas_start = 50;
             config->idt_alarm_time = 190;
@@ -33,12 +32,11 @@ namespace std {
 
             how_long_until_the_next_alarm(config, now_sec, &min_value_ms);
 
-            ApprovalTests::Approvals::verify(describeResult(min_value_ms, description));
+            REQUIRE(min_value_ms == 165000);
         }
 
         SECTION("P88N")
         {
-            std::string description = "duration measurement active, P88N";
             config->timers->duration->meas_active = true;
             config->reporting_flags += ZJ77_REPORTING_TRIGGERS_P88N;
             config->time_threshold = 10;
@@ -48,12 +46,11 @@ namespace std {
 
             how_long_until_the_next_alarm(config, now_sec, &min_value_ms);
 
-            ApprovalTests::Approvals::verify(describeResult(min_value_ms, description));
+            REQUIRE(min_value_ms == 6000);
         }
 
         SECTION("TIME_QUOTA")
         {
-            std::string description = "duration measurement active, TIME_QUOTA";
             config->timers->duration->meas_active = true;
             config->operational_flags += OPERATIONAL_FLAG_TIME_QUOTA_PRESENT;
             config->time_quota = 10;
@@ -62,11 +59,10 @@ namespace std {
 
             how_long_until_the_next_alarm(config, now_sec, &min_value_ms);
 
-            ApprovalTests::Approvals::verify(describeResult(min_value_ms, description));
+            REQUIRE(min_value_ms == 9000);
         }
         SECTION("ZB12")
         {
-            std::string description = "ZB12";
             config->reporting_flags += ZJ77_REPORTING_TRIGGERS_ZB12;
             config->operational_flags += OPERATIONAL_FLAG_ZB12_MODIFIED;
             config->last_pkt = now_sec - 3;
@@ -74,62 +70,41 @@ namespace std {
 
             how_long_until_the_next_alarm(config, now_sec, &min_value_ms);
 
-            ApprovalTests::Approvals::verify(describeResult(min_value_ms, description));
+            REQUIRE(min_value_ms == 10000);
         }
         SECTION("ZB12 unmodified")
         {
-            std::string description = "ZB12 unmodified";
             config->reporting_flags += ZJ77_REPORTING_TRIGGERS_ZB12;
             config->last_pkt = now_sec - 3;
             config->timers->quota_holding_time = 10;
 
             how_long_until_the_next_alarm(config, now_sec, &min_value_ms);
 
-            ApprovalTests::Approvals::verify(describeResult(min_value_ms, description));
+            REQUIRE(min_value_ms == 7000);
         }
         SECTION("DY9Xd")
         {
-            std::string description = "DY9Xd";
             config->reporting_flags = ZJ77_REPORTING_TRIGGERS_DY9X;
             config->timers->meas_dy9xd = 5;
             config->timers->periodic_meas_start = now_sec;
 
             how_long_until_the_next_alarm(config, now_sec, &min_value_ms);
 
-            ApprovalTests::Approvals::verify(describeResult(min_value_ms, description));
+            REQUIRE(min_value_ms == 5000);
         }
 
 
         SECTION("monitoring_time")
         {
             config->last_pkt = 75;
-
             config->timers->monitoring_time_ts = 130;
             config->timers->monitoring_time_start = 99;
 
             how_long_until_the_next_alarm(config, now_sec, &min_value_ms);
-            std::string description = "duration measurement inactive, monitoring_time";
 
-            ApprovalTests::Approvals::verify(describeResult(min_value_ms, description));
+            REQUIRE(min_value_ms == 129000);
         }
 
     }
 
-
-    alarm_config *getEmptyConfig() {
-        auto *config = new alarm_config();
-        config->timers = new timers();
-        config->timers->duration = new duration();
-        return config;
-    }
-
-    string describeResult(unsigned long min_value_ms, const string &description) {
-        std::ostringstream result;
-        if (min_value_ms == INT_MAX) {
-            result << description << ": INT_MAX";
-        } else {
-            result << description << ": " << min_value_ms;
-        }
-        return result.str();
-    }
 }

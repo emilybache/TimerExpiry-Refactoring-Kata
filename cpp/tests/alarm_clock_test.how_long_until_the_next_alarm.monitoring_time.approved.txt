@@ -1,1 +1,0 @@
-duration measurement inactive, monitoring_time: 129000

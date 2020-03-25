@@ -1,1 +1,0 @@
-duration measurement active, TIME_QUOTA: 9000

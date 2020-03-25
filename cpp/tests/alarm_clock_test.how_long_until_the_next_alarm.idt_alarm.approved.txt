@@ -1,1 +1,0 @@
-duration measurement active, idt_alarm_time set: 165000
