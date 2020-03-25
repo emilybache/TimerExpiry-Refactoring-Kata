@@ -1,10 +1,12 @@
 AlarmClock Refactoring Kata
 =============================
 
-TODO
+You would like to make a change to the function `how_long_until_the_next_alarm` - this change is described below. Before you make that change, you'd like to refactor the function to make it easier to make the change. (Make the change easy then make the easy change!) 
+
+In this branch, there are some test cases which largely cover the function you need to change.
 
 The change you need to make
 ---------------------------
 
-Add a new alarm when the time since the last packet is equal to timer_config.time_since_last_packet
+Add a new alarm. This alarm should be enabled when duration measurements are active and the operational flag `OPERATIONAL_FLAG_BTI_PRESENT` is set and the time since the last packet is equal to `bti_time_interval`.
 
