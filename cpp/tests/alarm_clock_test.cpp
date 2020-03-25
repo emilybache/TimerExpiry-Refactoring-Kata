@@ -31,15 +31,18 @@ TEST_CASE ("how_long_until_the_next_alarm") {
 
         Approvals::verify(describeResult(min_value_ms, description));
     }
-    SUBCASE("monitoring_time")
-    {
-        config->last_pkt = 75;
 
-        config->timers->monitoring_time_ts = 130;
-        config->timers->monitoring_time_start = 99;
+    SUBCASE("P88N")
+    {
+        std::string description = "duration measurement active, P88N";
+        config->timers->duration->meas_active = true;
+        config->reporting_flags += ZJ77_REPORTING_TRIGGERS_P88N;
+        config->time_threshold = 10;
+        config->timers->duration->meas = 1;
+        config->timers->duration->meas_start = now_sec;
+        config->timers->duration->meas_threshold_used = 3;
 
         how_long_until_the_next_alarm(config, now_sec, &min_value_ms);
-        std::string description = "duration measurement inactive, monitoring_time set: ";
 
         Approvals::verify(describeResult(min_value_ms, description));
     }
@@ -52,6 +55,20 @@ TEST_CASE ("how_long_until_the_next_alarm") {
         config->timers->periodic_meas_start = now_sec;
 
         how_long_until_the_next_alarm(config, now_sec, &min_value_ms);
+
+        Approvals::verify(describeResult(min_value_ms, description));
+    }
+
+
+    SUBCASE("monitoring_time")
+    {
+        config->last_pkt = 75;
+
+        config->timers->monitoring_time_ts = 130;
+        config->timers->monitoring_time_start = 99;
+
+        how_long_until_the_next_alarm(config, now_sec, &min_value_ms);
+        std::string description = "duration measurement inactive, monitoring_time";
 
         Approvals::verify(describeResult(min_value_ms, description));
     }
@@ -70,9 +87,9 @@ string describeResult(unsigned long min_value_ms, const string &description) {
     std::ostringstream result;
     if (min_value_ms == INT_MAX)
     {
-        result << description << "INT_MAX";
+        result << description << ": INT_MAX";
     } else {
-        result << description << min_value_ms;
+        result << description << ": " << min_value_ms;
     }
     return result.str();
 }

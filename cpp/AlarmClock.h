@@ -86,7 +86,8 @@ how_long_until_the_next_alarm(alarm_config* alarmConfig, const unsigned int now_
         }
         if ((reporting_flags & ZJ77_REPORTING_TRIGGERS_P88N) && (get_time_threshold(alarmConfig) != 0)) {
             time_sec = get_time_threshold(alarmConfig) -
-                       ((get_duration_meas(alarmConfig) + get_duration_meas_threshold_used(alarmConfig)) + pkt_rx_diff);
+                       ((get_duration_meas(alarmConfig) + get_duration_meas_threshold_used(alarmConfig))
+                       + pkt_rx_diff);
             if (time_sec < min_value_sec) {
                 min_value_sec = time_sec;
             }
