@@ -25,43 +25,41 @@ namespace std {
             how_long_until_the_next_alarm(config, now_sec, &min_value_ms);
             REQUIRE(min_value_ms == INT_MAX);
         }
-        SECTION("idt_alarm")
-        {
+        SECTION("duration measurement active") {
             set_duration_meas_active(config, true);
-            set_duration_meas_start(config, 50);
-            set_idt_alarm_time(config, 190);
-            set_last_pkt_time(config, 75);
-
-            how_long_until_the_next_alarm(config, now_sec, &min_value_ms);
-
-            REQUIRE(min_value_ms == 165000);
-        }
-
-        SECTION("P88N")
-        {
-            set_duration_meas_active(config, true);
-            add_reporting_flag(config, ZJ77_REPORTING_TRIGGERS_P88N);
-            set_time_threshold(config, 10);
-            set_duration_meas(config, 1);
-            set_duration_meas_start(config, now_sec);
-            set_duration_meas_threshold(config, 3);
-
-            how_long_until_the_next_alarm(config, now_sec, &min_value_ms);
-
-            REQUIRE(min_value_ms == 6000);
-        }
-
-        SECTION("TIME_QUOTA")
-        {
-            set_duration_meas_active(config, true);
-            add_operational_flag(config, OPERATIONAL_FLAG_TIME_QUOTA_PRESENT);
-            set_time_quota(config, 10);
             set_duration_meas_start(config, now_sec);
             set_duration_meas(config, 1);
+            SECTION("idt_alarm")
+            {
+                set_idt_alarm_time(config, now_sec + 90);
+                set_last_pkt_time(config, now_sec - 25);
 
-            how_long_until_the_next_alarm(config, now_sec, &min_value_ms);
+                how_long_until_the_next_alarm(config, now_sec, &min_value_ms);
 
-            REQUIRE(min_value_ms == 9000);
+                REQUIRE(min_value_ms == 165000);
+            }
+
+            SECTION("P88N")
+            {
+                add_reporting_flag(config, ZJ77_REPORTING_TRIGGERS_P88N);
+                set_time_threshold(config, 10);
+                set_duration_meas_threshold(config, 3);
+
+                how_long_until_the_next_alarm(config, now_sec, &min_value_ms);
+
+                REQUIRE(min_value_ms == 6000);
+            }
+
+            SECTION("TIME_QUOTA")
+            {
+                add_operational_flag(config, OPERATIONAL_FLAG_TIME_QUOTA_PRESENT);
+                set_time_quota(config, 10);
+
+                how_long_until_the_next_alarm(config, now_sec, &min_value_ms);
+
+                REQUIRE(min_value_ms == 9000);
+            }
+
         }
         SECTION("ZB12")
         {
