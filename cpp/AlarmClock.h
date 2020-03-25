@@ -6,12 +6,12 @@
 // operational flags
 unsigned int OPERATIONAL_FLAG_TIME_QUOTA_PRESENT = 1;
 unsigned int OPERATIONAL_FLAG_ZB12_STOPPED = 2;
-unsigned int OPERATIONAL_FLAG_ZB12_MODIFIED = 3;
+unsigned int OPERATIONAL_FLAG_ZB12_MODIFIED = 4;
 
 // reporting flags
 unsigned int ZJ77_REPORTING_TRIGGERS_ZB12 = 1;
 unsigned int ZJ77_REPORTING_TRIGGERS_P88N = 2;
-unsigned int ZJ77_REPORTING_TRIGGERS_DY9X = 3;
+unsigned int ZJ77_REPORTING_TRIGGERS_DY9X = 4;
 
 struct duration
 {
@@ -36,7 +36,7 @@ struct alarm_config
     timers *timers;
     unsigned int operational_flags; // bit field
     unsigned int reporting_flags; // bit field
-    unsigned int idt_time;
+    unsigned int idt_alarm_time;
     unsigned int time_threshold;
     unsigned int time_quota;
     unsigned int last_pkt;
@@ -52,7 +52,7 @@ unsigned int get_monitoring_time_ts(alarm_config *pAlarmConfig);
 unsigned int get_monitoring_time_start(alarm_config *pAlarmConfig);
 unsigned int get_time_of_last_pkt(alarm_config* pAlarmConfig);
 unsigned int get_reporting_flags(alarm_config *pAlarmConfig);
-unsigned int get_idt_time(alarm_config *pAlarmConfig);
+unsigned int get_idt_alarm_time(alarm_config *pAlarmConfig);
 unsigned int get_time_threshold(alarm_config *pAlarmConfig);
 unsigned int get_time_quota(alarm_config *pAlarmConfig);
 
@@ -78,8 +78,8 @@ how_long_until_the_next_alarm(alarm_config* alarmConfig, const unsigned int now_
     if (duration_measurement_active(alarmConfig)) {
         unsigned int pkt_rx_diff = now_sec - get_duration_meas_start(alarmConfig);
 
-        if (get_idt_time(alarmConfig) != 0) {
-            time_sec = get_idt_time(alarmConfig);
+        if (get_idt_alarm_time(alarmConfig) != 0) {
+            time_sec = get_idt_alarm_time(alarmConfig);
             if ((time_sec - last_pkt_diff) < min_value_sec) {
                 min_value_sec = time_sec - last_pkt_diff;
             }
@@ -188,8 +188,8 @@ unsigned int get_time_threshold(alarm_config *pAlarmConfig) {
     return pAlarmConfig->time_threshold;
 }
 
-unsigned int get_idt_time(alarm_config *pAlarmConfig) {
-    return pAlarmConfig->idt_time;
+unsigned int get_idt_alarm_time(alarm_config *pAlarmConfig) {
+    return pAlarmConfig->idt_alarm_time;
 }
 
 unsigned  int get_duration_meas_start(alarm_config *pAlarmConfig) {
