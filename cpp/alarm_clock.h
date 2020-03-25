@@ -7,6 +7,7 @@
 const unsigned int OPERATIONAL_FLAG_TIME_QUOTA_PRESENT = 1;
 const unsigned int OPERATIONAL_FLAG_ZB12_STOPPED = 2;
 const unsigned int OPERATIONAL_FLAG_ZB12_MODIFIED = 4;
+const unsigned int OPERATIONAL_FLAG_BTI_PRESENT = 8;
 
 // reporting flags
 const unsigned int ZJ77_REPORTING_TRIGGERS_ZB12 = 1;
@@ -17,7 +18,8 @@ struct duration {
     unsigned int meas;
     unsigned int meas_threshold_used;
     unsigned int meas_start;
-    short meas_active;
+    bool meas_active;
+    unsigned int bti_time_interval;
 };
 
 struct timers {
@@ -81,6 +83,8 @@ bool get_operational_flag_state(struct alarm_config *pAlarmConfig, unsigned int 
 
 bool test_and_clear_op_flag(struct alarm_config *pAlarmConfig, unsigned int flag);
 
+unsigned int get_bti_time_interval(struct alarm_config);
+
 void set_duration_meas_active(struct alarm_config *config, bool value);
 
 void set_duration_meas_start(struct alarm_config *config, unsigned int value);
@@ -110,6 +114,8 @@ void set_periodig_meas_start(struct alarm_config *config, unsigned int value);
 void set_monitoring_time_ts(struct alarm_config *config, unsigned int value);
 
 void set_monitoring_time_start(struct alarm_config *config, unsigned int value);
+
+void set_bti_time_interval(struct alarm_config *config, unsigned int value);
 
 
 #endif //ALARMCLOCK_H

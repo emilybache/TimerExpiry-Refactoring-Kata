@@ -210,3 +210,7 @@ void set_monitoring_time_start(struct alarm_config *config, unsigned int value) 
     config->timers->monitoring_time_start = value;
 }
 
+void set_bti_time_interval(struct alarm_config *config, unsigned int value) {
+    config->timers->duration->bti_time_interval = value;
+}
+
