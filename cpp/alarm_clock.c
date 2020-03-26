@@ -21,24 +21,23 @@ void
 how_long_until_the_next_alarm(struct alarm_config *alarmConfig, const unsigned int now_sec,
                               unsigned long *min_value_ms) {
 
-    unsigned int results_array[6] = {INT_MAX, INT_MAX, INT_MAX, INT_MAX, INT_MAX, INT_MAX};
-
-    results_array[0] = idt_alarm(alarmConfig, now_sec);
-    results_array[1] = p88n_alarm(alarmConfig, now_sec);
-    results_array[2] = time_quota_alarm(alarmConfig, now_sec);
-    results_array[3] = zb12_alarm(alarmConfig, now_sec);
-    results_array[4] = dy9x_alarm(alarmConfig, now_sec);
-    results_array[5] = monitoring_time_alarm(alarmConfig, now_sec);
-
-    clear_zb12_flag_if_set(alarmConfig);
-
+    unsigned int (*pointers_to_alarm_functions[6]) (const struct alarm_config*, const unsigned int);
+    pointers_to_alarm_functions[0] = idt_alarm;
+    pointers_to_alarm_functions[1] = p88n_alarm;
+    pointers_to_alarm_functions[2] = time_quota_alarm;
+    pointers_to_alarm_functions[3] = zb12_alarm;
+    pointers_to_alarm_functions[4] = dy9x_alarm;
+    pointers_to_alarm_functions[5] = monitoring_time_alarm;
+    
     unsigned  int smallest = INT_MAX;
     for (int i = 0; i < 6; ++i) {
-        if (results_array[i] < smallest) {
-            smallest = results_array[i];
+        unsigned int alarm_time = pointers_to_alarm_functions[i](alarmConfig, now_sec);
+        if (alarm_time < smallest) {
+            smallest = alarm_time;
         }
     }
 
+    clear_zb12_flag_if_set(alarmConfig);
     convert_to_ms_if_set(min_value_ms, smallest);
 }
 
