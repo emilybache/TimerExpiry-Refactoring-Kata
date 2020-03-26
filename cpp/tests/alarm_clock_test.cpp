@@ -14,7 +14,7 @@ namespace std {
     TEST_CASE ("how_long_until_the_next_alarm") {
 
         unsigned int now_sec = 100; // 100 seconds since the epoch
-        unsigned long min_value_ms = INT_MAX;
+        unsigned long min_value_ms = LONG_MAX;
 
         auto *config = new alarm_config();
         config->timers = new timers();
@@ -23,7 +23,7 @@ namespace std {
         SECTION("no alarms set")
         {
             how_long_until_the_next_alarm(config, now_sec, &min_value_ms);
-            REQUIRE(min_value_ms == INT_MAX);
+            REQUIRE(min_value_ms == LONG_MAX);
         }
         SECTION("duration measurement active") {
             set_duration_meas_active(config, true);
