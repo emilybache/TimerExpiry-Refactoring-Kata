@@ -1,43 +1,63 @@
 #include <limits.h>
 #include "alarm_clock.h"
 
+void convert_to_ms_if_set(unsigned long *min_value_ms, unsigned int min_value_sec);
+
+unsigned int idt_alarm(const struct alarm_config *alarmConfig, const unsigned int now_sec);
+
+unsigned int p88n_alarm(const struct alarm_config *alarmConfig, const unsigned int now_sec);
+
+unsigned int time_quota_alarm(const struct alarm_config *alarmConfig, const unsigned int now_sec);
+
+unsigned int dy9x_alarm(const struct alarm_config *alarmConfig, const unsigned int now_sec);
+
+unsigned int monitoring_time_alarm(const struct alarm_config *alarmConfig, const unsigned int now_sec);
+
+unsigned int zb12_alarm(const struct alarm_config *alarmConfig, const unsigned int now_sec);
+
+void clear_zb12_flag_if_set(const struct alarm_config *alarmConfig);
+
 void
 how_long_until_the_next_alarm(struct alarm_config *alarmConfig, const unsigned int now_sec,
                               unsigned long *min_value_ms) {
-    unsigned int time_sec;
-    unsigned int diff_sec;
-    unsigned int min_value_sec = INT_MAX;
 
-    unsigned int op_flags = get_operational_flags(alarmConfig);
-    unsigned int reporting_flags = get_reporting_flags(alarmConfig);
-    unsigned int last_pkt_diff = now_sec - get_time_of_last_pkt(alarmConfig);
+    unsigned int results_array[6] = {INT_MAX, INT_MAX, INT_MAX, INT_MAX, INT_MAX, INT_MAX};
 
-    if (duration_measurement_active(alarmConfig)) {
-        unsigned int pkt_rx_diff = now_sec - get_duration_meas_start(alarmConfig);
+    results_array[0] = idt_alarm(alarmConfig, now_sec);
+    results_array[1] = p88n_alarm(alarmConfig, now_sec);
+    results_array[2] = time_quota_alarm(alarmConfig, now_sec);
+    results_array[3] = zb12_alarm(alarmConfig, now_sec);
+    results_array[4] = dy9x_alarm(alarmConfig, now_sec);
+    results_array[5] = monitoring_time_alarm(alarmConfig, now_sec);
 
-        if (get_idt_alarm_time(alarmConfig) != 0) {
-            time_sec = get_idt_alarm_time(alarmConfig);
-            if ((time_sec - last_pkt_diff) < min_value_sec) {
-                min_value_sec = time_sec - last_pkt_diff;
-            }
-        }
-        if ((reporting_flags & ZJ77_REPORTING_TRIGGERS_P88N) && (get_time_threshold(alarmConfig) != 0)) {
-            time_sec = get_time_threshold(alarmConfig) -
-                       ((get_duration_meas(alarmConfig) + get_duration_meas_threshold_used(alarmConfig))
-                        + pkt_rx_diff);
-            if (time_sec < min_value_sec) {
-                min_value_sec = time_sec;
-            }
-        }
-        if ((op_flags & OPERATIONAL_FLAG_TIME_QUOTA_PRESENT) && (get_time_quota(alarmConfig) != 0)) {
-            time_sec = get_time_quota(alarmConfig) - (get_duration_meas(alarmConfig) + pkt_rx_diff);
-            if (time_sec < min_value_sec) {
-                min_value_sec = time_sec;
-            }
+    clear_zb12_flag_if_set(alarmConfig);
+
+    unsigned  int smallest = INT_MAX;
+    for (int i = 0; i < 6; ++i) {
+        if (results_array[i] < smallest) {
+            smallest = results_array[i];
         }
     }
 
+    convert_to_ms_if_set(min_value_ms, smallest);
+}
+
+void clear_zb12_flag_if_set(const struct alarm_config *alarmConfig) {
+    unsigned int reporting_flags = get_reporting_flags(alarmConfig);
     if (reporting_flags & ZJ77_REPORTING_TRIGGERS_ZB12) {
+        if ((get_quota_holding_time(alarmConfig) != 0) &&
+            !get_operational_flag_state(alarmConfig, OPERATIONAL_FLAG_ZB12_STOPPED)) {
+
+            if (get_operational_flag_state(alarmConfig, OPERATIONAL_FLAG_ZB12_MODIFIED))
+                add_operational_flag(alarmConfig, OPERATIONAL_FLAG_ZB12_MODIFIED);
+        }
+    }
+}
+
+unsigned int zb12_alarm(const struct alarm_config *alarmConfig, const unsigned int now_sec) {
+    unsigned int time_sec = INT_MAX;
+    unsigned int lreporting_flags = get_reporting_flags(alarmConfig);
+    if (lreporting_flags & ZJ77_REPORTING_TRIGGERS_ZB12) {
         if ((get_quota_holding_time(alarmConfig) != 0) &&
             !get_operational_flag_state(alarmConfig, OPERATIONAL_FLAG_ZB12_STOPPED)) {
             /* If ZB12 is just provisioned, start timer with provisioned value
@@ -45,45 +65,80 @@ how_long_until_the_next_alarm(struct alarm_config *alarmConfig, const unsigned i
              * If ZB12 is not modified (and not just provisioned), restart the session timer for remainder of the provisioned value
              */
             time_sec = get_quota_holding_time(alarmConfig);
-            if (!test_and_clear_op_flag(alarmConfig, OPERATIONAL_FLAG_ZB12_MODIFIED) &&
+
+            if (!get_operational_flag_state(alarmConfig, OPERATIONAL_FLAG_ZB12_MODIFIED) &&
                 (get_time_of_last_pkt(alarmConfig) != 0)) {
+                unsigned int last_pkt_diff = now_sec - get_time_of_last_pkt(alarmConfig);
                 time_sec -= last_pkt_diff;
             }
-
-            if (time_sec < min_value_sec) {
-                min_value_sec = time_sec;
-            }
         }
     }
+    return time_sec;
+}
 
-    if ((reporting_flags & ZJ77_REPORTING_TRIGGERS_DY9X) && (get_meas_DY9Xd(alarmConfig) != 0)) {
-        diff_sec = now_sec - get_periodic_meas_start(alarmConfig);
-        time_sec = get_meas_DY9Xd(alarmConfig) - diff_sec;
-        if (time_sec < min_value_sec) {
-            min_value_sec = time_sec;
-        }
-    }
+unsigned int monitoring_time_alarm(const struct alarm_config *alarmConfig, const unsigned int now_sec) {
+    unsigned int time_sec = INT_MAX;
+    unsigned int diff_sec;
     // Handle timer for Monitoring Time
     if (get_monitoring_time_ts(alarmConfig) != 0) {
         diff_sec = now_sec - get_monitoring_time_start(alarmConfig);
-        time_sec = get_monitoring_time_ts(alarmConfig) - diff_sec;
-        if (time_sec < min_value_sec) {
-            min_value_sec = time_sec;
-        }
-    }
 
+        time_sec = get_monitoring_time_ts(alarmConfig) - diff_sec;
+    }
+    return time_sec;
+}
+
+unsigned int dy9x_alarm(const struct alarm_config *alarmConfig, const unsigned int now_sec) {
+    unsigned int time_sec = INT_MAX;
+    if ((get_reporting_flags(alarmConfig) & ZJ77_REPORTING_TRIGGERS_DY9X) && (get_meas_DY9Xd(alarmConfig) != 0)) {
+        unsigned int diff_sec = now_sec - get_periodic_meas_start(alarmConfig);
+
+        time_sec = get_meas_DY9Xd(alarmConfig) - diff_sec;
+    }
+    return time_sec;
+}
+
+unsigned int time_quota_alarm(const struct alarm_config *alarmConfig, const unsigned int now_sec) {
+    unsigned int time_sec = INT_MAX;
+    unsigned int op_flags = get_operational_flags(alarmConfig);
+    if (duration_measurement_active(alarmConfig)
+    && (op_flags & OPERATIONAL_FLAG_TIME_QUOTA_PRESENT) && (get_time_quota(alarmConfig) != 0)) {
+        unsigned int pkt_rx_diff = now_sec - get_duration_meas_start(alarmConfig);
+
+        time_sec = get_time_quota(alarmConfig) - (get_duration_meas(alarmConfig) + pkt_rx_diff);
+    }
+    return time_sec;
+}
+
+unsigned int p88n_alarm(const struct alarm_config *alarmConfig, const unsigned int now_sec) {
+    unsigned int time_sec = INT_MAX;
+    unsigned int local_reporting_flags = get_reporting_flags(alarmConfig);
+    if (duration_measurement_active(alarmConfig) && (local_reporting_flags & ZJ77_REPORTING_TRIGGERS_P88N) && (get_time_threshold(alarmConfig) != 0)) {
+        unsigned int pkt_rx_diff = now_sec - get_duration_meas_start(alarmConfig);
+
+        time_sec = get_time_threshold(alarmConfig) -
+                                ((get_duration_meas(alarmConfig) + get_duration_meas_threshold_used(alarmConfig))
+                                 + pkt_rx_diff);
+    }
+    return time_sec;
+}
+
+unsigned int idt_alarm(const struct alarm_config *alarmConfig, const unsigned int now_sec) {
+    unsigned int time_sec = INT_MAX;
+    if (duration_measurement_active(alarmConfig) && get_idt_alarm_time(alarmConfig) != 0) {
+        unsigned int last_pkt_diff = now_sec - get_time_of_last_pkt(alarmConfig);
+        time_sec = get_idt_alarm_time(alarmConfig);
+        time_sec = time_sec - last_pkt_diff;
+    }
+    return time_sec;
+}
+
+void convert_to_ms_if_set(unsigned long *min_value_ms, unsigned int min_value_sec) {
     if (min_value_sec != INT_MAX) {
         if (min_value_sec * 1000 < *min_value_ms) {
             *min_value_ms = min_value_sec * 1000;
         }
     }
-}
-
-bool test_and_clear_op_flag(struct alarm_config *pAlarmConfig, unsigned int flag) {
-    bool result = pAlarmConfig->operational_flags & flag;
-    if (result)
-        pAlarmConfig->operational_flags &= ~flag;
-    return result;
 }
 
 bool get_operational_flag_state(struct alarm_config *pAlarmConfig, unsigned int flag) {
@@ -217,5 +272,4 @@ void set_monitoring_time_start(struct alarm_config *config, unsigned int value) 
 void set_bti_time_interval(struct alarm_config *config, unsigned int value) {
     config->timers->duration->bti_time_interval = value;
 }
-
 

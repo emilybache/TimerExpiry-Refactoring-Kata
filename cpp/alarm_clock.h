@@ -81,8 +81,6 @@ bool duration_measurement_active(struct alarm_config *pAlarmConfig);
 
 bool get_operational_flag_state(struct alarm_config *pAlarmConfig, unsigned int flag);
 
-bool test_and_clear_op_flag(struct alarm_config *pAlarmConfig, unsigned int flag);
-
 unsigned int get_bti_time_interval(struct alarm_config *pAlarmConfig);
 
 void set_duration_meas_active(struct alarm_config *config, bool value);
