@@ -9,13 +9,11 @@ extern "C"
 #include "../alarm_clock.h"
 }
 
-namespace std {
 
-    TEST_CASE ("how_long_until_the_next_alarm") {
+TEST_CASE ("how_long_until_the_next_alarm") {
 
-        // TODO: write tests for this function
+    // TODO: write tests for this function
 
-
-    }
 
 }
+
