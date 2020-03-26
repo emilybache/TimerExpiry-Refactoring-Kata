@@ -150,6 +150,10 @@ unsigned int get_operational_flags(struct alarm_config *pAlarmConfig) {
     return pAlarmConfig->operational_flags;
 }
 
+unsigned int get_bti_time_interval(struct alarm_config *config) {
+    return config->timers->duration->bti_time_interval;
+}
+
 void set_duration_meas_active(struct alarm_config *config, bool value) {
     config->timers->duration->meas_active = true;
 }
@@ -213,4 +217,5 @@ void set_monitoring_time_start(struct alarm_config *config, unsigned int value) 
 void set_bti_time_interval(struct alarm_config *config, unsigned int value) {
     config->timers->duration->bti_time_interval = value;
 }
+
 
