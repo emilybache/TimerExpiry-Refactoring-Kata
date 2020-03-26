@@ -15,7 +15,7 @@ unsigned int monitoring_time_alarm(const struct alarm_config *alarmConfig, const
 
 unsigned int zb12_alarm(const struct alarm_config *alarmConfig, const unsigned int now_sec);
 
-void clear_zb12_flag_if_set(const struct alarm_config *alarmConfig);
+void clear_zb12_flag_if_set(struct alarm_config *alarmConfig);
 
 void
 how_long_until_the_next_alarm(struct alarm_config *alarmConfig, const unsigned int now_sec,
@@ -41,7 +41,7 @@ how_long_until_the_next_alarm(struct alarm_config *alarmConfig, const unsigned i
     convert_to_ms_if_set(min_value_ms, smallest);
 }
 
-void clear_zb12_flag_if_set(const struct alarm_config *alarmConfig) {
+void clear_zb12_flag_if_set(struct alarm_config *alarmConfig) {
     unsigned int reporting_flags = get_reporting_flags(alarmConfig);
     if (reporting_flags & ZJ77_REPORTING_TRIGGERS_ZB12) {
         if ((get_quota_holding_time(alarmConfig) != 0) &&
@@ -55,8 +55,7 @@ void clear_zb12_flag_if_set(const struct alarm_config *alarmConfig) {
 
 unsigned int zb12_alarm(const struct alarm_config *alarmConfig, const unsigned int now_sec) {
     unsigned int time_sec = INT_MAX;
-    unsigned int lreporting_flags = get_reporting_flags(alarmConfig);
-    if (lreporting_flags & ZJ77_REPORTING_TRIGGERS_ZB12) {
+    if (get_reporting_flags(alarmConfig) & ZJ77_REPORTING_TRIGGERS_ZB12) {
         if ((get_quota_holding_time(alarmConfig) != 0) &&
             !get_operational_flag_state(alarmConfig, OPERATIONAL_FLAG_ZB12_STOPPED)) {
             /* If ZB12 is just provisioned, start timer with provisioned value
@@ -140,71 +139,71 @@ void convert_to_ms_if_set(unsigned long *min_value_ms, unsigned int min_value_se
     }
 }
 
-bool get_operational_flag_state(struct alarm_config *pAlarmConfig, unsigned int flag) {
+bool get_operational_flag_state(const struct alarm_config *pAlarmConfig, unsigned int flag) {
     return pAlarmConfig->operational_flags & flag;
 }
 
-unsigned int get_monitoring_time_start(struct alarm_config *pAlarmConfig) {
+unsigned int get_monitoring_time_start(const struct alarm_config *pAlarmConfig) {
     return pAlarmConfig->timers->monitoring_time_start;
 }
 
-unsigned int get_monitoring_time_ts(struct alarm_config *pAlarmConfig) {
+unsigned int get_monitoring_time_ts(const struct alarm_config *pAlarmConfig) {
     return pAlarmConfig->timers->monitoring_time_ts;
 }
 
-unsigned int get_periodic_meas_start(struct alarm_config *pAlarmConfig) {
+unsigned int get_periodic_meas_start(const struct alarm_config *pAlarmConfig) {
     return pAlarmConfig->timers->periodic_meas_start;
 }
 
-unsigned int get_meas_DY9Xd(struct alarm_config *pAlarmConfig) {
+unsigned int get_meas_DY9Xd(const struct alarm_config *pAlarmConfig) {
     return pAlarmConfig->timers->meas_dy9xd;
 }
 
-unsigned int get_quota_holding_time(struct alarm_config *pAlarmConfig) {
+unsigned int get_quota_holding_time(const struct alarm_config *pAlarmConfig) {
     return pAlarmConfig->timers->quota_holding_time;
 }
 
-unsigned int get_time_quota(struct alarm_config *pAlarmConfig) {
+unsigned int get_time_quota(const struct alarm_config *pAlarmConfig) {
     return pAlarmConfig->time_quota;
 }
 
-unsigned int get_duration_meas_threshold_used(struct alarm_config *pAlarmConfig) {
+unsigned int get_duration_meas_threshold_used(const struct alarm_config *pAlarmConfig) {
     return pAlarmConfig->timers->duration->meas_threshold_used;
 }
 
-unsigned int get_duration_meas(struct alarm_config *pAlarmConfig) {
+unsigned int get_duration_meas(const struct alarm_config *pAlarmConfig) {
     return pAlarmConfig->timers->duration->meas;
 }
 
-unsigned int get_time_threshold(struct alarm_config *pAlarmConfig) {
+unsigned int get_time_threshold(const struct alarm_config *pAlarmConfig) {
     return pAlarmConfig->time_threshold;
 }
 
-unsigned int get_idt_alarm_time(struct alarm_config *pAlarmConfig) {
+unsigned int get_idt_alarm_time(const struct alarm_config *pAlarmConfig) {
     return pAlarmConfig->idt_alarm_time;
 }
 
-unsigned int get_duration_meas_start(struct alarm_config *pAlarmConfig) {
+unsigned int get_duration_meas_start(const struct alarm_config *pAlarmConfig) {
     return pAlarmConfig->timers->duration->meas_start;
 }
 
-unsigned int get_reporting_flags(struct alarm_config *pAlarmConfig) {
+unsigned int get_reporting_flags(const struct alarm_config *pAlarmConfig) {
     return pAlarmConfig->reporting_flags;
 }
 
-unsigned int get_time_of_last_pkt(struct alarm_config *pAlarmConfig) {
+unsigned int get_time_of_last_pkt(const struct alarm_config *pAlarmConfig) {
     return pAlarmConfig->last_pkt;
 }
 
-bool duration_measurement_active(struct alarm_config *pAlarmConfig) {
+bool duration_measurement_active(const struct alarm_config *pAlarmConfig) {
     return pAlarmConfig->timers->duration->meas_active;
 }
 
-unsigned int get_operational_flags(struct alarm_config *pAlarmConfig) {
+unsigned int get_operational_flags(const struct alarm_config *pAlarmConfig) {
     return pAlarmConfig->operational_flags;
 }
 
-unsigned int get_bti_time_interval(struct alarm_config *config) {
+unsigned int get_bti_time_interval(const struct alarm_config *config) {
     return config->timers->duration->bti_time_interval;
 }
 
