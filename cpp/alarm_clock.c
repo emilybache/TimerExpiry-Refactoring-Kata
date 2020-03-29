@@ -79,10 +79,15 @@ how_long_until_the_next_alarm(struct alarm_config *alarmConfig, const unsigned i
     }
 }
 
+void clear_operational_flag(struct alarm_config *pAlarmConfig,
+                            unsigned int flag) {
+    pAlarmConfig->operational_flags &= ~flag;
+}
+
 bool test_and_clear_op_flag(struct alarm_config *pAlarmConfig, unsigned int flag) {
-    bool result = pAlarmConfig->operational_flags & flag;
+    bool result = get_operational_flag_state(pAlarmConfig, flag);
     if (result)
-        pAlarmConfig->operational_flags &= ~flag;
+        clear_operational_flag(pAlarmConfig, flag);
     return result;
 }
 
