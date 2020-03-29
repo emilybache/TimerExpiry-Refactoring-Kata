@@ -49,6 +49,20 @@ void how_long_until_the_next_alarm(struct alarm_config *alarmConfig,
                                    unsigned int now_sec,
                                    unsigned long *min_value_ms);
 
+unsigned int calculate_earliest_alarm(const struct alarm_config *alarmConfig, unsigned int now_sec);
+
+unsigned int calculate_idt_alarm(const struct alarm_config *alarmConfig, const unsigned int now_sec);
+
+unsigned int calculate_p88n_alarm(const struct alarm_config *alarmConfig, const unsigned int now_sec);
+
+unsigned int calculate_time_quota_alarm(const struct alarm_config *alarmConfig, const unsigned int now_sec);
+
+unsigned int calculate_zb12_alarm(const struct alarm_config *alarmConfig, const unsigned int now_sec);
+
+unsigned int calculate_dy9z_alarm(const struct alarm_config *alarmConfig, const unsigned int now_sec);
+
+unsigned int calculate_monitoring_time_alarm(const struct alarm_config *alarmConfig, const unsigned int now_sec);
+
 unsigned int get_duration_meas_start(const struct alarm_config *pAlarmConfig);
 
 unsigned int get_duration_meas(const struct alarm_config *pAlarmConfig);

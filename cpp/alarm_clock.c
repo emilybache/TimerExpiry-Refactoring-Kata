@@ -1,38 +1,47 @@
 #include <limits.h>
 #include "alarm_clock.h"
 
-unsigned int calculate_idt_alarm(const struct alarm_config *alarmConfig, const unsigned int now_sec);
 
-unsigned int calculate_p88n_alarm(const struct alarm_config *alarmConfig, const unsigned int now_sec);
+void clear_zb12_flag_if_alarm_was_active(struct alarm_config *alarmConfig);
 
-unsigned int calculate_time_quota_alarm(const struct alarm_config *alarmConfig, const unsigned int now_sec);
-
-unsigned int calculate_zb12_alarm(const struct alarm_config *alarmConfig, const unsigned int now_sec);
-
-unsigned int calculate_dy9z_alarm(const struct alarm_config *alarmConfig, const unsigned int now_sec);
-
-unsigned int calculate_monitoring_time_alarm(const struct alarm_config *alarmConfig, const unsigned int now_sec);
+typedef unsigned int (*AlarmFunction)(const struct alarm_config*, const unsigned int);
 
 void
 how_long_until_the_next_alarm(struct alarm_config *alarmConfig, const unsigned int now_sec,
                               unsigned long *min_value_ms) {
-    unsigned int min_value_sec = INT_MAX;
+    unsigned int min_value_sec;
+    min_value_sec = calculate_earliest_alarm(alarmConfig, now_sec);
+    clear_zb12_flag_if_alarm_was_active(alarmConfig);
 
-    unsigned int alarm_values[] = {INT_MAX, INT_MAX, INT_MAX, INT_MAX, INT_MAX, INT_MAX};
-
-    alarm_values[0] = calculate_idt_alarm(alarmConfig, now_sec);
-    alarm_values[1] = calculate_p88n_alarm(alarmConfig, now_sec);
-    alarm_values[2] = calculate_time_quota_alarm(alarmConfig, now_sec);
-    alarm_values[3] = calculate_zb12_alarm(alarmConfig, now_sec);
-    alarm_values[4] = calculate_dy9z_alarm(alarmConfig, now_sec);
-    alarm_values[5] = calculate_monitoring_time_alarm(alarmConfig, now_sec);
-
-    for (int i = 0; i < 6; ++i) {
-        if (alarm_values[i] < min_value_sec) {
-            min_value_sec = alarm_values[i];
+    if (min_value_sec != INT_MAX) {
+        unsigned int in_ms = min_value_sec * 1000;
+        if (in_ms < *min_value_ms) {
+            *min_value_ms = in_ms;
         }
     }
+}
 
+unsigned int calculate_earliest_alarm(const struct alarm_config *alarmConfig, unsigned int now_sec) {
+    unsigned int min_value_sec = INT_MAX;
+    unsigned int alarm_value;
+
+    AlarmFunction alarm_functions[] = {calculate_idt_alarm,
+                                       calculate_p88n_alarm,
+                                       calculate_time_quota_alarm,
+                                       calculate_zb12_alarm,
+                                       calculate_dy9z_alarm,
+                                       calculate_monitoring_time_alarm};
+
+    for (int i = 0; i < 6; ++i) {
+        alarm_value = alarm_functions[i](alarmConfig, now_sec);
+        if (alarm_value < min_value_sec) {
+            min_value_sec = alarm_value;
+        }
+    }
+    return min_value_sec;
+}
+
+void clear_zb12_flag_if_alarm_was_active(struct alarm_config *alarmConfig) {
     if (get_reporting_flags(alarmConfig) & ZJ77_REPORTING_TRIGGERS_ZB12 && (get_quota_holding_time(alarmConfig) != 0) &&
         !get_operational_flag_state(alarmConfig, OPERATIONAL_FLAG_ZB12_STOPPED)) {
         // If ZB12 is modified, reset ZB12 modified flag
@@ -40,16 +49,10 @@ how_long_until_the_next_alarm(struct alarm_config *alarmConfig, const unsigned i
             clear_operational_flag(alarmConfig, OPERATIONAL_FLAG_ZB12_MODIFIED);
         }
     }
-
-    if (min_value_sec != INT_MAX) {
-        if (min_value_sec * 1000 < *min_value_ms) {
-            *min_value_ms = min_value_sec * 1000;
-        }
-    }
 }
 
 unsigned int calculate_monitoring_time_alarm(const struct alarm_config *alarmConfig, const unsigned int now_sec) {
-    unsigned int time_sec;
+    unsigned int time_sec = INT_MAX;
     unsigned int diff_sec;
     // Handle timer for Monitoring Time
     if (get_monitoring_time_ts(alarmConfig) != 0) {
@@ -74,14 +77,13 @@ unsigned int calculate_zb12_alarm(const struct alarm_config *alarmConfig, const 
     if (get_reporting_flags(alarmConfig) & ZJ77_REPORTING_TRIGGERS_ZB12 && (get_quota_holding_time(alarmConfig) != 0) &&
         !get_operational_flag_state(alarmConfig, OPERATIONAL_FLAG_ZB12_STOPPED)) {
         /* If ZB12 is just provisioned, start timer with provisioned value
-         * If ZB12 is modified, start timer with modified value and reset ZB12 modified flag
+         * If ZB12 is modified, start timer with modified value
          * If ZB12 is not modified (and not just provisioned), restart the session timer for remainder of the provisioned value
          */
         zb12_alarm = get_quota_holding_time(alarmConfig);
         if (!get_operational_flag_state(alarmConfig, OPERATIONAL_FLAG_ZB12_MODIFIED) &&
             (get_time_of_last_pkt(alarmConfig) != 0)) {
-            unsigned int last_pkt_diff = now_sec - get_time_of_last_pkt(alarmConfig);
-            zb12_alarm -= last_pkt_diff;
+            zb12_alarm -= now_sec - get_time_of_last_pkt(alarmConfig);
         }
 
     }
@@ -90,10 +92,12 @@ unsigned int calculate_zb12_alarm(const struct alarm_config *alarmConfig, const 
 
 unsigned int calculate_time_quota_alarm(const struct alarm_config *alarmConfig, const unsigned int now_sec) {
     unsigned int time_quota_alarm = INT_MAX;
+    unsigned int pkt_rx_diff;
+
     if (duration_measurement_active(alarmConfig) &&
         (get_operational_flags(alarmConfig) & OPERATIONAL_FLAG_TIME_QUOTA_PRESENT) &&
         (get_time_quota(alarmConfig) != 0)) {
-        unsigned int pkt_rx_diff = now_sec - get_duration_meas_start(alarmConfig);
+        pkt_rx_diff = now_sec - get_duration_meas_start(alarmConfig);
         time_quota_alarm = get_time_quota(alarmConfig) - (get_duration_meas(alarmConfig) + pkt_rx_diff);
     }
     return time_quota_alarm;
@@ -113,10 +117,12 @@ unsigned int calculate_p88n_alarm(const struct alarm_config *alarmConfig, const 
 
 unsigned int calculate_idt_alarm(const struct alarm_config *alarmConfig, const unsigned int now_sec) {
     unsigned int idt_alarm_time = INT_MAX;
+    unsigned int time_sec;
+    unsigned int last_pkt_diff;
+
     if (duration_measurement_active(alarmConfig) && get_idt_alarm_time(alarmConfig) != 0) {
-        unsigned int time_sec;
         time_sec = get_idt_alarm_time(alarmConfig);
-        unsigned int last_pkt_diff = now_sec - get_time_of_last_pkt(alarmConfig);
+        last_pkt_diff = now_sec - get_time_of_last_pkt(alarmConfig);
         idt_alarm_time = time_sec - last_pkt_diff;
     }
     return idt_alarm_time;
