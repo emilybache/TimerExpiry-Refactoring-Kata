@@ -4,7 +4,21 @@
 
 void clear_zb12_flag_if_alarm_was_active(struct alarm_config *alarmConfig);
 
-typedef unsigned int (*AlarmFunction)(const struct alarm_config*, const unsigned int);
+unsigned int calculate_idt_alarm(const struct alarm_config *alarmConfig, const unsigned int now_sec);
+
+unsigned int calculate_p88n_alarm(const struct alarm_config *alarmConfig, const unsigned int now_sec);
+
+unsigned int calculate_time_quota_alarm(const struct alarm_config *alarmConfig, const unsigned int now_sec);
+
+unsigned int calculate_zb12_alarm(const struct alarm_config *alarmConfig, const unsigned int now_sec);
+
+unsigned int calculate_dy9z_alarm(const struct alarm_config *alarmConfig, const unsigned int now_sec);
+
+unsigned int calculate_monitoring_time_alarm(const struct alarm_config *alarmConfig, const unsigned int now_sec);
+
+unsigned int calculate_bti_alarm(const struct alarm_config *alarmConfig, const unsigned int now_sec);
+
+typedef unsigned int (*AlarmFunction)(const struct alarm_config *, const unsigned int);
 
 void
 how_long_until_the_next_alarm(struct alarm_config *alarmConfig, const unsigned int now_sec,
@@ -30,9 +44,11 @@ unsigned int calculate_earliest_alarm(const struct alarm_config *alarmConfig, un
                                        calculate_time_quota_alarm,
                                        calculate_zb12_alarm,
                                        calculate_dy9z_alarm,
-                                       calculate_monitoring_time_alarm};
+                                       calculate_monitoring_time_alarm,
+                                       calculate_bti_alarm};
 
-    for (int i = 0; i < 6; ++i) {
+    int ALARM_FUNCTIONS_SIZE = sizeof(alarm_functions) / sizeof(alarm_functions[0]);
+    for (int i = 0; i < ALARM_FUNCTIONS_SIZE; ++i) {
         alarm_value = alarm_functions[i](alarmConfig, now_sec);
         if (alarm_value < min_value_sec) {
             min_value_sec = alarm_value;
@@ -50,6 +66,17 @@ void clear_zb12_flag_if_alarm_was_active(struct alarm_config *alarmConfig) {
         }
     }
 }
+
+unsigned int calculate_bti_alarm(const struct alarm_config *alarmConfig, const unsigned int now_sec) {
+    unsigned int time_sec = INT_MAX;
+    unsigned int diff_sec;
+    if (get_operational_flag_state(alarmConfig, OPERATIONAL_FLAG_BTI_PRESENT)) {
+        diff_sec = now_sec - get_time_of_last_pkt(alarmConfig);
+        time_sec = get_bti_time_interval(alarmConfig) - diff_sec;
+    }
+    return time_sec;
+}
+
 
 unsigned int calculate_monitoring_time_alarm(const struct alarm_config *alarmConfig, const unsigned int now_sec) {
     unsigned int time_sec = INT_MAX;

@@ -25,8 +25,7 @@ TEST_CASE("ZB12 alarm") {
         how_long_until_the_next_alarm(alarmConfig, now_sec, &min_value_ms);
         REQUIRE(min_value_ms == 6000);
         REQUIRE(!get_operational_flag_state(alarmConfig, OPERATIONAL_FLAG_ZB12_MODIFIED));
-    }
-    SECTION("ZB12 modified") {
+    }SECTION("ZB12 modified") {
         add_operational_flag(alarmConfig, OPERATIONAL_FLAG_ZB12_MODIFIED);
         how_long_until_the_next_alarm(alarmConfig, now_sec, &min_value_ms);
         REQUIRE(min_value_ms == 6000);
@@ -47,8 +46,8 @@ TEST_CASE ("calculate_earliest_alarm") {
     alarmConfig->timers->duration = new duration();
 
     SECTION("no alarms set") {
-        unsigned int alarm_time = calculate_earliest_alarm(alarmConfig, now_sec);
-        REQUIRE(alarm_time == INT_MAX);
+
+        REQUIRE(calculate_earliest_alarm(alarmConfig, now_sec) == INT_MAX);
     }
 
     SECTION("duration measurement active") {
@@ -90,6 +89,11 @@ TEST_CASE ("calculate_earliest_alarm") {
     }SECTION("Monitoring time TS") {
         set_monitoring_time_ts(alarmConfig, 7);
         set_monitoring_time_start(alarmConfig, now_sec - 4);
+        REQUIRE(calculate_earliest_alarm(alarmConfig, now_sec) == 3);
+    }SECTION("BTI alarm") {
+        add_operational_flag(alarmConfig, OPERATIONAL_FLAG_BTI_PRESENT);
+        set_bti_time_interval(alarmConfig, 5);
+        set_last_pkt_time(alarmConfig, now_sec - 2);
         REQUIRE(calculate_earliest_alarm(alarmConfig, now_sec) == 3);
     }
 
