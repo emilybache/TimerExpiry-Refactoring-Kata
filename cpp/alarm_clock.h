@@ -117,5 +117,7 @@ void set_monitoring_time_start(struct alarm_config *config, unsigned int value);
 
 void set_bti_time_interval(struct alarm_config *config, unsigned int value);
 
+void clear_operational_flag(struct alarm_config *pAlarmConfig, unsigned int flag);
+
 
 #endif //ALARMCLOCK_H
