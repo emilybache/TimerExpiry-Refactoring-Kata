@@ -58,7 +58,7 @@ unsigned int calculate_earliest_alarm(const struct alarm_config *alarmConfig, un
 }
 
 void clear_zb12_flag_if_alarm_was_active(struct alarm_config *alarmConfig) {
-    if (get_reporting_flags(alarmConfig) & ZJ77_REPORTING_TRIGGERS_ZB12 && (get_quota_holding_time(alarmConfig) != 0) &&
+    if (get_reporting_flags(alarmConfig) & REPORTING_TRIGGERS_ZB12 && (get_quota_holding_time(alarmConfig) != 0) &&
         !get_operational_flag_state(alarmConfig, OPERATIONAL_FLAG_ZB12_STOPPED)) {
         // If ZB12 is modified, reset ZB12 modified flag
         if (get_operational_flag_state(alarmConfig, OPERATIONAL_FLAG_ZB12_MODIFIED)) {
@@ -92,7 +92,7 @@ unsigned int calculate_monitoring_time_alarm(const struct alarm_config *alarmCon
 unsigned int calculate_dy9z_alarm(const struct alarm_config *alarmConfig, const unsigned int now_sec) {
     unsigned int dy9z_alarm = INT_MAX;
     unsigned int diff_sec2;
-    if ((get_reporting_flags(alarmConfig) & ZJ77_REPORTING_TRIGGERS_DY9X) && (get_meas_DY9Xd(alarmConfig) != 0)) {
+    if ((get_reporting_flags(alarmConfig) & REPORTING_TRIGGERS_DY9X) && (get_meas_DY9Xd(alarmConfig) != 0)) {
         diff_sec2 = now_sec - get_periodic_meas_start(alarmConfig);
         dy9z_alarm = get_meas_DY9Xd(alarmConfig) - diff_sec2;
     }
@@ -101,7 +101,7 @@ unsigned int calculate_dy9z_alarm(const struct alarm_config *alarmConfig, const 
 
 unsigned int calculate_zb12_alarm(const struct alarm_config *alarmConfig, const unsigned int now_sec) {
     unsigned int zb12_alarm = INT_MAX;
-    if (get_reporting_flags(alarmConfig) & ZJ77_REPORTING_TRIGGERS_ZB12 && (get_quota_holding_time(alarmConfig) != 0) &&
+    if (get_reporting_flags(alarmConfig) & REPORTING_TRIGGERS_ZB12 && (get_quota_holding_time(alarmConfig) != 0) &&
         !get_operational_flag_state(alarmConfig, OPERATIONAL_FLAG_ZB12_STOPPED)) {
         /* If ZB12 is just provisioned, start timer with provisioned value
          * If ZB12 is modified, start timer with modified value
@@ -132,7 +132,7 @@ unsigned int calculate_time_quota_alarm(const struct alarm_config *alarmConfig, 
 
 unsigned int calculate_p88n_alarm(const struct alarm_config *alarmConfig, const unsigned int now_sec) {
     unsigned int p88n_alarm_time = INT_MAX;
-    if (duration_measurement_active(alarmConfig) && (get_reporting_flags(alarmConfig) & ZJ77_REPORTING_TRIGGERS_P88N) &&
+    if (duration_measurement_active(alarmConfig) && (get_reporting_flags(alarmConfig) & REPORTING_TRIGGERS_P88N) &&
         (get_time_threshold(alarmConfig) != 0)) {
         unsigned int pkt_rx_diff = now_sec - get_duration_meas_start(alarmConfig);
         p88n_alarm_time = get_time_threshold(alarmConfig) -
@@ -276,7 +276,7 @@ void set_meas_dy9xd(struct alarm_config *config, unsigned int value) {
     config->timers->meas_dy9xd = value;
 }
 
-void set_periodig_meas_start(struct alarm_config *config, unsigned int value) {
+void set_periodic_meas_start(struct alarm_config *config, unsigned int value) {
     config->timers->periodic_meas_start = value;
 }
 

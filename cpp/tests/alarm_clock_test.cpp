@@ -17,7 +17,7 @@ TEST_CASE("ZB12 alarm") {
     alarmConfig->timers = new timers();
     alarmConfig->timers->duration = new duration();
 
-    add_reporting_flag(alarmConfig, ZJ77_REPORTING_TRIGGERS_ZB12);
+    add_reporting_flag(alarmConfig, REPORTING_TRIGGERS_ZB12);
     set_quota_holding_time(alarmConfig, 6);
     clear_operational_flag(alarmConfig, OPERATIONAL_FLAG_ZB12_STOPPED); // this should be the default anyway
     set_last_pkt_time(alarmConfig, now_sec);
@@ -59,7 +59,7 @@ TEST_CASE ("calculate_earliest_alarm") {
             set_idt_alarm_time(alarmConfig, 3);
             REQUIRE(calculate_earliest_alarm(alarmConfig, now_sec) == 3);
         }SECTION("P88N alarm") {
-            add_reporting_flag(alarmConfig, ZJ77_REPORTING_TRIGGERS_P88N);
+            add_reporting_flag(alarmConfig, REPORTING_TRIGGERS_P88N);
             set_time_threshold(alarmConfig, 10);
             REQUIRE(calculate_earliest_alarm(alarmConfig, now_sec) == 8);
         }SECTION("Time Quota alarm") {
@@ -70,7 +70,7 @@ TEST_CASE ("calculate_earliest_alarm") {
     }
 
     SECTION("ZB12") {
-        add_reporting_flag(alarmConfig, ZJ77_REPORTING_TRIGGERS_ZB12);
+        add_reporting_flag(alarmConfig, REPORTING_TRIGGERS_ZB12);
         set_quota_holding_time(alarmConfig, 6);
         clear_operational_flag(alarmConfig, OPERATIONAL_FLAG_ZB12_STOPPED); // this should be the default anyway
         set_last_pkt_time(alarmConfig, now_sec);
@@ -82,9 +82,9 @@ TEST_CASE ("calculate_earliest_alarm") {
         }
 
     }SECTION("DY9X alarm") {
-        add_reporting_flag(alarmConfig, ZJ77_REPORTING_TRIGGERS_DY9X);
+        add_reporting_flag(alarmConfig, REPORTING_TRIGGERS_DY9X);
         set_meas_dy9xd(alarmConfig, 5);
-        set_periodig_meas_start(alarmConfig, now_sec - 2);
+        set_periodic_meas_start(alarmConfig, now_sec - 2);
         REQUIRE(calculate_earliest_alarm(alarmConfig, now_sec) == 3);
     }SECTION("Monitoring time TS") {
         set_monitoring_time_ts(alarmConfig, 7);
@@ -103,20 +103,20 @@ TEST_CASE ("calculate_earliest_alarm") {
         set_last_pkt_time(alarmConfig, now_sec);
         set_idt_alarm_time(alarmConfig, 30);
 
-        add_reporting_flag(alarmConfig, ZJ77_REPORTING_TRIGGERS_P88N);
+        add_reporting_flag(alarmConfig, REPORTING_TRIGGERS_P88N);
         set_time_threshold(alarmConfig, 26);
 
         add_operational_flag(alarmConfig, OPERATIONAL_FLAG_TIME_QUOTA_PRESENT);
         set_time_quota(alarmConfig, 21);
 
-        add_reporting_flag(alarmConfig, ZJ77_REPORTING_TRIGGERS_ZB12);
+        add_reporting_flag(alarmConfig, REPORTING_TRIGGERS_ZB12);
         set_quota_holding_time(alarmConfig, 17);
         clear_operational_flag(alarmConfig, OPERATIONAL_FLAG_ZB12_STOPPED); // this should be the default anyway
         add_operational_flag(alarmConfig, OPERATIONAL_FLAG_ZB12_MODIFIED);
 
-        add_reporting_flag(alarmConfig, ZJ77_REPORTING_TRIGGERS_DY9X);
+        add_reporting_flag(alarmConfig, REPORTING_TRIGGERS_DY9X);
         set_meas_dy9xd(alarmConfig, 15);
-        set_periodig_meas_start(alarmConfig, now_sec - 2);
+        set_periodic_meas_start(alarmConfig, now_sec - 2);
 
         set_monitoring_time_ts(alarmConfig, 7);
         set_monitoring_time_start(alarmConfig, now_sec - 4);
