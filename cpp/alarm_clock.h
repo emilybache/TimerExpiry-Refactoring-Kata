@@ -10,9 +10,9 @@ const unsigned int OPERATIONAL_FLAG_ZB12_MODIFIED = 4;
 const unsigned int OPERATIONAL_FLAG_BTI_PRESENT = 8;
 
 // reporting flags
-const unsigned int ZJ77_REPORTING_TRIGGERS_ZB12 = 1;
-const unsigned int ZJ77_REPORTING_TRIGGERS_P88N = 2;
-const unsigned int ZJ77_REPORTING_TRIGGERS_DY9X = 4;
+const unsigned int REPORTING_TRIGGERS_ZB12 = 1;
+const unsigned int REPORTING_TRIGGERS_P88N = 2;
+const unsigned int REPORTING_TRIGGERS_DY9X = 4;
 
 struct duration {
     unsigned int meas;
