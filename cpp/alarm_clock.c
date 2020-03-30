@@ -21,7 +21,7 @@ how_long_until_the_next_alarm(struct alarm_config *alarmConfig, const unsigned i
                 min_value_sec = time_sec - last_pkt_diff;
             }
         }
-        if ((reporting_flags & ZJ77_REPORTING_TRIGGERS_P88N) && (get_time_threshold(alarmConfig) != 0)) {
+        if ((reporting_flags & REPORTING_TRIGGERS_P88N) && (get_time_threshold(alarmConfig) != 0)) {
             time_sec = get_time_threshold(alarmConfig) -
                        ((get_duration_meas(alarmConfig) + get_duration_meas_threshold_used(alarmConfig))
                         + pkt_rx_diff);
@@ -37,7 +37,7 @@ how_long_until_the_next_alarm(struct alarm_config *alarmConfig, const unsigned i
         }
     }
 
-    if (reporting_flags & ZJ77_REPORTING_TRIGGERS_ZB12) {
+    if (reporting_flags & REPORTING_TRIGGERS_ZB12) {
         if ((get_quota_holding_time(alarmConfig) != 0) &&
             !get_operational_flag_state(alarmConfig, OPERATIONAL_FLAG_ZB12_STOPPED)) {
             /* If ZB12 is just provisioned, start timer with provisioned value
@@ -56,7 +56,7 @@ how_long_until_the_next_alarm(struct alarm_config *alarmConfig, const unsigned i
         }
     }
 
-    if ((reporting_flags & ZJ77_REPORTING_TRIGGERS_DY9X) && (get_meas_DY9Xd(alarmConfig) != 0)) {
+    if ((reporting_flags & REPORTING_TRIGGERS_DY9X) && (get_meas_DY9Xd(alarmConfig) != 0)) {
         diff_sec = now_sec - get_periodic_meas_start(alarmConfig);
         time_sec = get_meas_DY9Xd(alarmConfig) - diff_sec;
         if (time_sec < min_value_sec) {
@@ -207,7 +207,7 @@ void set_meas_dy9xd(struct alarm_config *config, unsigned int value) {
     config->timers->meas_dy9xd = value;
 }
 
-void set_periodig_meas_start(struct alarm_config *config, unsigned int value) {
+void set_periodic_meas_start(struct alarm_config *config, unsigned int value) {
     config->timers->periodic_meas_start = value;
 }
 
