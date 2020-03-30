@@ -207,7 +207,7 @@ void set_meas_dy9xd(struct alarm_config *config, unsigned int value) {
     config->timers->meas_dy9xd = value;
 }
 
-void set_periodig_meas_start(struct alarm_config *config, unsigned int value) {
+void set_periodic_meas_start(struct alarm_config *config, unsigned int value) {
     config->timers->periodic_meas_start = value;
 }
 

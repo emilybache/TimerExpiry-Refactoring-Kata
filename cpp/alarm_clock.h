@@ -109,7 +109,7 @@ void set_quota_holding_time(struct alarm_config *config, unsigned int value);
 
 void set_meas_dy9xd(struct alarm_config *config, unsigned int value);
 
-void set_periodig_meas_start(struct alarm_config *config, unsigned int value);
+void set_periodic_meas_start(struct alarm_config *config, unsigned int value);
 
 void set_monitoring_time_ts(struct alarm_config *config, unsigned int value);
 
