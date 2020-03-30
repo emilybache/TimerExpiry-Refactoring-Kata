@@ -160,7 +160,7 @@ unsigned int get_bti_time_interval(const struct alarm_config *config) {
 }
 
 void set_duration_meas_active(struct alarm_config *config, bool value) {
-    config->timers->duration->meas_active = true;
+    config->timers->duration->meas_active = value;
 }
 
 void set_duration_meas_start(struct alarm_config *config, unsigned int value) {
