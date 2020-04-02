@@ -1,14 +1,14 @@
 Timer Expiry Refactoring Kata
 =============================
 
-You would like to make a change to the function `how_long_until_the_next_alarm` - this change is described below. Before you make that change, you'd like to refactor the function to make it easier to make the change. (Make the change easy then make the easy change!) Before you do any refactoring, you'd like to have some test cases as insurance against mistakes.
+You would like to make a change to the function `how_long_until_next_timer_expiry` - this change is described below. Before you make that change, you'd like to refactor the function to make it easier to make the change. (Make the change easy then make the easy change!) Before you do any refactoring, you'd like to have some test cases as insurance against mistakes.
 
 The starting position is on the master branch, but do note there are other branches in this repo too. If you want to jump straight to the refactoring part, there is a branch 'with_tests' that has some test cases. Before you rely on them for refactoring, you should of course work out what they cover and what kinds of mistakes they will catch.
 
 What this code does
 -------------------
 
-The `how_long_until_the_next_alarm` method should work out the number of milliseconds until a timer will expire. It goes through six timers, named:
+The `how_long_until_next_timer_expiry` function should work out the number of milliseconds until a timer will expire. It's used by another function that pauses execution of the program until then. (The calling code is not included in this exercise). The `how_long_until_next_timer_expiry` function goes through six timers, named:
 
 - idt
 - p88n
@@ -17,7 +17,7 @@ The `how_long_until_the_next_alarm` method should work out the number of millise
 - dy9x
 - Monitoring Time
 
-The code works out which timers are currently active, and how long until each one should expire. It returns the one that will expire next, (via a parameter).
+It works out which of these timers are currently active, and how long until each one should expire. It returns the time left until the next one will expire, (via a parameter).
 
 
 The change you need to make
