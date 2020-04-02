@@ -10,10 +10,12 @@ extern "C"
 }
 
 TEST_CASE ("how_long_until_next_timer_expiry") {
+    // seconds since the epoch
+    unsigned int now_sec = 100;
+    // in-parameter for when the next timer will expire, in milliseconds after now_sec
+    unsigned long min_value_ms = LONG_MAX;
 
-    unsigned int now_sec = 100; // seconds since the epoch
-    unsigned long min_value_ms = LONG_MAX; // when the next timer should go off, in milliseconds after now_sec
-
+    // the configuration of all the various timers
     auto *timerConfig = new timer_config();
     timerConfig->timers = new timers();
     timerConfig->timers->duration = new duration();
