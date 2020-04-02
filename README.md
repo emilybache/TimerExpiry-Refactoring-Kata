@@ -8,7 +8,7 @@ The starting position is on the master branch, but do note there are other branc
 What this code does
 -------------------
 
-The `how_long_until_the_next_alarm` method should work out the number of milliseconds until the a timer will expire. It goes through six timers, named:
+The `how_long_until_the_next_alarm` method should work out the number of milliseconds until a timer will expire. It goes through six timers, named:
 
 - idt
 - p88n
@@ -23,5 +23,5 @@ The code works out which timers are currently active, and how long until each on
 The change you need to make
 ---------------------------
 
-Add a new timer, named bti. This timer should be enabled when duration measurements are active and the operational flag `OPERATIONAL_FLAG_BTI_PRESENT` is set. The timer should go off when the time since the last packet is equal to `bti_time_interval`.
+Add a new timer, named bti. This timer should be enabled when duration measurements are active and the operational flag `OPERATIONAL_FLAG_BTI_PRESENT` is set. The timer should expire when the time since the last packet is equal to `bti_time_interval`. You can get the time of the last packet using the method `get_time_of_last_pkt`.
 
