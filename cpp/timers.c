@@ -1,5 +1,5 @@
 #include <limits.h>
-#include "alarm_clock.h"
+#include "timers.h"
 
 void
 how_long_until_next_timer_expiry(struct timer_config *timerConfig, const unsigned int now_sec,
