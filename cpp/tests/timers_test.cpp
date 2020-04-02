@@ -6,7 +6,7 @@
 
 extern "C"
 {
-#include "../alarm_clock.h"
+#include "timers.h"
 }
 
 TEST_CASE ("how_long_until_next_timer_expiry") {
