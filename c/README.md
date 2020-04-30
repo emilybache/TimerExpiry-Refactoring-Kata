@@ -1,7 +1,7 @@
-AlarmClock Refactoring Kata - C++ version
+Timer Expiry Refactoring Kata - C version
 ==============================================
 
-See the [top level readme](https://github.com/emilybache/AlarmClock-Refactoring-Kata) for general information about this exercise.
+See the [top level readme](https://github.com/emilybache/TimerExpiry-Refactoring-Kata) for general information about this exercise.
 
 ## Dependencies
 
