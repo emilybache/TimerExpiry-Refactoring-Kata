@@ -39,7 +39,7 @@ TEST_CASE ("how_long_until_next_timer_expiry") {
         set_duration_meas(timerConfig, 1);
         set_duration_meas_start(timerConfig, now_sec - 1);
         set_last_pkt_time(timerConfig, now_sec);
-        SECTION("idt alarm") {
+        SECTION("idt timer") {
             set_idt_alarm_time(timerConfig, 3);
             how_long_until_next_timer_expiry(timerConfig, now_sec, &min_value_ms);
             REQUIRE(min_value_ms == 3000);
