@@ -1,8 +1,14 @@
+#define CATCH_CONFIG_MAIN  // This tells Catch to provide a main() - only do this in one cpp file
 #include <climits>
 
 #include "catch2/catch.hpp"
 #include "ApprovalTests.hpp"
 #include <string>
+
+#include <memory>
+
+auto defaultReporterDisposer =
+        ApprovalTests::Approvals::useAsDefaultReporter(std::make_shared<ApprovalTests::ClipboardReporter>());
 
 extern "C"
 {
