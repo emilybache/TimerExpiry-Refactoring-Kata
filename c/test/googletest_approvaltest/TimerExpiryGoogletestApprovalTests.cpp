@@ -27,7 +27,8 @@ protected:
     unsigned long min_value_ms = LONG_MAX;
 
 };
+
 TEST_F(TimerExpiryTest, NoTimersSet) {
-how_long_until_next_timer_expiry(timerConfig, now_sec, &min_value_ms);
-EXPECT_EQ(LONG_MAX, min_value_ms);
+    how_long_until_next_timer_expiry(timerConfig, now_sec, &min_value_ms);
+    EXPECT_EQ(LONG_MAX, min_value_ms);
 }
