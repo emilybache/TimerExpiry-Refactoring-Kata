@@ -2,13 +2,6 @@
 #include <climits>
 
 #include "catch2/catch.hpp"
-#include "ApprovalTests.hpp"
-#include <string>
-
-#include <memory>
-
-auto defaultReporterDisposer =
-        ApprovalTests::Approvals::useAsDefaultReporter(std::make_shared<ApprovalTests::ClipboardReporter>());
 
 extern "C"
 {
