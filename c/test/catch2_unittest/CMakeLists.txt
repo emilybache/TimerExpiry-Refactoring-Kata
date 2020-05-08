@@ -13,3 +13,4 @@ add_test(NAME ${TEST_NAME} COMMAND ${TEST_NAME})
 if (MSVC)
     target_compile_options(${TEST_NAME} PRIVATE "/FC")
 endif()
+

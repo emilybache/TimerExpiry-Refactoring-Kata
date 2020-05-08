@@ -1,0 +1,15 @@
+operational flags: 1
+reporting flags: 7
+last packet: 100
+idt alarm time: 30
+time threshold: 26
+duration meas: 0
+duration meas threshold: 0
+time quota: 21
+duration meas: 0
+time quota holding time: 17
+DY9Xd: 15
+periodic meas start: 98
+monitoring time start: 96
+monitoring time ts: 7
+NEXT_TIMER: 3000
