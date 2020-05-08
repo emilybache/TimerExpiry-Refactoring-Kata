@@ -1,5 +1,5 @@
 set(TEST_NAME TimerExpiryCatch2ApprovalTests)
-add_executable(${TEST_NAME})
+add_executable(${TEST_NAME} ../googletest_approvaltest/TimerExpiryGoogletestApprovalTests.cpp ../googletest_approvaltest/googletest_approval_main.cpp)
 target_sources(${TEST_NAME} PRIVATE TimerExpiryCatch2ApprovalTests.cpp)
 target_link_libraries(${TEST_NAME} lib src)
 set_property(TARGET ${TEST_NAME} PROPERTY CXX_STANDARD 11)
