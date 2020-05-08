@@ -5,10 +5,6 @@
 #include "ApprovalTests.hpp"
 #include <string>
 
-#include <memory>
-
-auto defaultReporterDisposer =
-        ApprovalTests::Approvals::useAsDefaultReporter(std::make_shared<ApprovalTests::ClipboardReporter>());
 
 
 extern "C"
@@ -38,9 +34,16 @@ TEST_CASE ("TimerExpiry", "how_long_until_next_timer_expiry") {
     how_long_until_next_timer_expiry(timerConfig, now_sec, &min_value_ms);
 
     std::stringstream to_approve;
-    to_approve << timerConfig;
-    to_approve << "NEXT_TIMER: " << min_value_ms;
+    to_approve << *timerConfig;
+    to_approve << "NEXT_TIMER: ";
 
-    ApprovalTests::Approvals::verify(to_approve.str());
+    if (min_value_ms != LONG_MAX) {
+        to_approve << min_value_ms;
+    } else {
+        to_approve << "LONG_MAX";
+    }
+
+    auto t = to_approve.str();
+    ApprovalTests::Approvals::verify(t);
 }
 
