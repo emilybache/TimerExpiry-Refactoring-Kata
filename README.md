@@ -3,9 +3,18 @@ Timer Expiry Refactoring Kata
 
 You would like to make a change to the function `how_long_until_next_timer_expiry` - this change is described below. 
 Before you make that change, you'd like to refactor the function to make it easier to make the change. (Make the change easy then make the easy change!) 
-Before you do any refactoring, you'd like to have some test cases as insurance against mistakes. In this branch 'with_tests' there are some test cases. 
-Before you rely on them for refactoring, you should of course work out what they cover and what kinds of mistakes they will catch.
-There are actually three different variants of the tests, using different test frameworks. All should be equally reliable for refactoring purposes.
+Before you do any refactoring, you'd like to have some test cases as insurance against mistakes. 
+
+Adding tests
+------------
+There are three different starting points for tests, using different test frameworks. Choose one of them to build on. 
+If you like, start over and build the same tests in a different framework. You might learn something about test design!
+
+Refactoring
+-----------
+When you are confident in your test cases, refactor to remove duplication and to make adding the new timer easier (see below). 
+Note - there is another branch in this repo called 'with_tests'. That branch has reasonable tests built with all three
+frameworks that you can rely on while refactoring.
 
 What this code does
 -------------------
