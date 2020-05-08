@@ -1,0 +1,12 @@
+
+BEFORE:
+operational flags: 4
+reporting flags: 1
+time quota holding time: 7
+
+AFTER:
+operational flags: 0
+reporting flags: 1
+time quota holding time: 7
+
+NEXT_TIMER: 7000

@@ -1,0 +1,10 @@
+
+BEFORE:
+operational flags: 0
+reporting flags: 0
+
+AFTER:
+operational flags: 0
+reporting flags: 0
+
+NEXT_TIMER: LONG_MAX
