@@ -2,10 +2,14 @@
 #include "timers.h"
 
 void
-how_long_until_next_timer_expiry(struct timer_config *timerConfig, const unsigned int now_sec,
-                                 unsigned long *min_value_ms) {
+how_long_until_next_timer_expiry(
+        struct timer_config *timerConfig,
+        const unsigned int now_sec,
+        unsigned long *min_value_ms)
+{
     unsigned int time_sec;
     unsigned int diff_sec;
+    unsigned int pkt_rx_diff;
     unsigned int min_value_sec = INT_MAX;
 
     unsigned int op_flags = get_operational_flags(timerConfig);
@@ -13,7 +17,7 @@ how_long_until_next_timer_expiry(struct timer_config *timerConfig, const unsigne
     unsigned int last_pkt_diff = now_sec - get_time_of_last_pkt(timerConfig);
 
     if (duration_measurement_active(timerConfig)) {
-        unsigned int pkt_rx_diff = now_sec - get_duration_meas_start(timerConfig);
+        pkt_rx_diff = now_sec - get_duration_meas_start(timerConfig);
 
         if (get_idt_alarm_time(timerConfig) != 0) {
             time_sec = get_idt_alarm_time(timerConfig);

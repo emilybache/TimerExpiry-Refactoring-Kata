@@ -46,7 +46,7 @@ struct timer_config {
 // The parameter 'now_sec' is the current time (in seconds since the epoch)
 // The parameter 'timerConfig' is the alarm clock configuration
 void how_long_until_next_timer_expiry(struct timer_config *timerConfig,
-                                      const unsigned int now_sec,
+                                      unsigned int now_sec,
                                       unsigned long *min_value_ms);
 
 unsigned int get_duration_meas_start(const struct timer_config *timerConfig);

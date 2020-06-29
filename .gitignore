@@ -3,3 +3,4 @@
 .idea
 
 *.received.*
+.DS_Store
