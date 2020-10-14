@@ -7364,7 +7364,7 @@ namespace Catch {
 // end catch_benchmark.hpp
 // start catch_constructor.hpp
 
-// Constructor and destructor helpers
+// Constructor and destructor printers
 
 
 #include <type_traits>
@@ -15887,7 +15887,7 @@ private:
 
 #if defined(__clang__)
 #  pragma clang diagnostic push
-// For simplicity, benchmarking-only helpers are always enabled
+// For simplicity, benchmarking-only printers are always enabled
 #  pragma clang diagnostic ignored "-Wunused-function"
 #endif
 
