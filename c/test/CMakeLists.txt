@@ -1,4 +1,7 @@
+
+add_subdirectory(printers)
 add_subdirectory(catch2_approvaltest)
 add_subdirectory(catch2_unittest)
 add_subdirectory(googletest_unittest)
+add_subdirectory(googletest_approvaltest)
 #add_subdirectory(texttest)
