@@ -50,5 +50,4 @@ add_subdirectory(${googletest_SOURCE_DIR} ${googletest_BINARY_DIR})
 
 enable_testing()
 add_subdirectory(src)
-add_subdirectory(lib)
 add_subdirectory(test)
