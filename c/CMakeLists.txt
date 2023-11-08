@@ -6,7 +6,21 @@ set(CMAKE_CXX_STANDARD 11)
 # Load FetchContent module.
 include(FetchContent)
 
-# Declare GoogleTest as the content to fetch
+# catch2
+FetchContent_Declare(
+        Catch2
+        GIT_REPOSITORY https://github.com/catchorg/Catch2.git
+        GIT_TAG        v2.13.10)
+FetchContent_MakeAvailable(Catch2)
+
+# approvals
+FetchContent_Declare(
+        ApprovalTests
+        GIT_REPOSITORY https://github.com/approvals/ApprovalTests.cpp
+        GIT_TAG        v.10.5.1)
+FetchContent_MakeAvailable(ApprovalTests)
+
+# GoogleTest
 FetchContent_Declare(
         googletest
         GIT_REPOSITORY https://github.com/google/googletest.git
