@@ -12,7 +12,7 @@ public class TimerConfig
     public uint time_quota { get; set; }
     public uint last_pkt { get; set; }
 
-    public void how_long_until_next_timer_expiry(TimerConfig timerConfig, uint now_sec, out ulong min_value_ms)
+    public static void how_long_until_next_timer_expiry(TimerConfig timerConfig, uint now_sec, out ulong min_value_ms)
     {
         uint time_sec;
         uint diff_sec;

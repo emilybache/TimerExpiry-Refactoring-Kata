@@ -20,7 +20,7 @@ public class TimerExpiryVerifyNUnitTest
         timerConfig.Timers = new Timers();
         timerConfig.Timers.Duration = new Duration();
 
-        timerConfig.how_long_until_next_timer_expiry(timerConfig, now_sec, out min_value_ms);
+        TimerConfig.how_long_until_next_timer_expiry(timerConfig, now_sec, out min_value_ms);
 
         // no timers are set, so min_value_ms is not updated and remains at the value we set earlier
         return Verifier.Verify(min_value_ms);
