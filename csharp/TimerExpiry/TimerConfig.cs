@@ -118,7 +118,7 @@ public class TimerConfig
         return result;
     }
 
-    private void clear_operational_flag(OperationalFlags flag)
+    public void clear_operational_flag(OperationalFlags flag)
     {
         operational_flags &= ~(uint)flag;
     }
