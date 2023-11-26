@@ -12,33 +12,31 @@ public class TimerConfig
     public uint time_quota { get; set; }
     public uint last_pkt { get; set; }
 
-    public void how_long_until_next_timer_expiry(TimerConfig timerConfig, uint now_sec, out ulong min_value_ms)
+    public void how_long_until_next_timer_expiry(uint now_sec, out ulong min_value_ms)
     {
         uint time_sec;
         uint diff_sec;
         uint min_value_sec = UInt32.MaxValue;
 
-        uint op_flags = timerConfig.operational_flags;
-        uint reporting_flags = timerConfig.reporting_flags;
-        uint last_pkt_diff = now_sec - timerConfig.last_pkt;
+        uint last_pkt_diff = now_sec - last_pkt;
 
-        if (timerConfig.Timers.Duration.MeasActive)
+        if (Timers.Duration.MeasActive)
         {
-            uint pkt_rx_diff = now_sec - timerConfig.Timers.Duration.MeasStart;
+            uint pkt_rx_diff = now_sec - Timers.Duration.MeasStart;
 
-            if (timerConfig.idt_alarm_time != 0)
+            if (idt_alarm_time != 0)
             {
-                time_sec = timerConfig.idt_alarm_time;
+                time_sec = idt_alarm_time;
                 if ((time_sec - last_pkt_diff) < min_value_sec)
                 {
                     min_value_sec = time_sec - last_pkt_diff;
                 }
             }
 
-            if (((reporting_flags & (uint)ReportingTriggers.P88N) > 0) && (timerConfig.time_threshold != 0))
+            if (((reporting_flags & (uint)ReportingTriggers.P88N) > 0) && (time_threshold != 0))
             {
-                time_sec = timerConfig.time_threshold -
-                           ((timerConfig.Timers.Duration.Meas + timerConfig.Timers.Duration.MeasThresholdUsed)
+                time_sec = time_threshold -
+                           ((Timers.Duration.Meas + Timers.Duration.MeasThresholdUsed)
                             + pkt_rx_diff);
                 if (time_sec < min_value_sec)
                 {
@@ -46,9 +44,9 @@ public class TimerConfig
                 }
             }
 
-            if (((op_flags & (uint)OperationalFlags.TimeQuotaPresent) > 0) && (timerConfig.time_quota != 0))
+            if (((operational_flags & (uint)OperationalFlags.TimeQuotaPresent) > 0) && (time_quota != 0))
             {
-                time_sec = timerConfig.time_quota - (timerConfig.Timers.Duration.Meas + pkt_rx_diff);
+                time_sec = time_quota - (Timers.Duration.Meas + pkt_rx_diff);
                 if (time_sec < min_value_sec)
                 {
                     min_value_sec = time_sec;
@@ -58,16 +56,16 @@ public class TimerConfig
 
         if ((reporting_flags & (uint)ReportingTriggers.ZB12) > 0)
         {
-            if ((timerConfig.Timers.QuotaHoldingTime != 0) &&
-                !timerConfig.getOperationalFlagState(OperationalFlags.ZB12Stopped))
+            if ((Timers.QuotaHoldingTime != 0) &&
+                !getOperationalFlagState(OperationalFlags.ZB12Stopped))
             {
                 /* If ZB12 is just provisioned, start timer with provisioned value
                  * If ZB12 is modified, start timer with modified value and reset ZB12 modified flag
                  * If ZB12 is not modified (and not just provisioned), restart the session timer for remainder of the provisioned value
                  */
-                time_sec = timerConfig.Timers.QuotaHoldingTime;
-                if (!timerConfig.test_and_clear_op_flag(OperationalFlags.ZB12Modified) &&
-                    (timerConfig.last_pkt != 0))
+                time_sec = Timers.QuotaHoldingTime;
+                if (!test_and_clear_op_flag(OperationalFlags.ZB12Modified) &&
+                    (last_pkt != 0))
                 {
                     time_sec -= last_pkt_diff;
                 }
@@ -79,10 +77,10 @@ public class TimerConfig
             }
         }
 
-        if ((reporting_flags & (uint)ReportingTriggers.DY9X) > 0 && (timerConfig.Timers.MeasDy9xd != 0))
+        if ((reporting_flags & (uint)ReportingTriggers.DY9X) > 0 && (Timers.MeasDy9xd != 0))
         {
-            diff_sec = now_sec - timerConfig.Timers.PeriodicMeasStart;
-            time_sec = timerConfig.Timers.MeasDy9xd - diff_sec;
+            diff_sec = now_sec - Timers.PeriodicMeasStart;
+            time_sec = Timers.MeasDy9xd - diff_sec;
             if (time_sec < min_value_sec)
             {
                 min_value_sec = time_sec;
@@ -90,10 +88,10 @@ public class TimerConfig
         }
 
         // Handle timer for Monitoring Time
-        if (timerConfig.Timers.MonitoringTimeTs != 0)
+        if (Timers.MonitoringTimeTs != 0)
         {
-            diff_sec = now_sec - timerConfig.Timers.MonitoringTimeStart;
-            time_sec = timerConfig.Timers.MonitoringTimeTs - diff_sec;
+            diff_sec = now_sec - Timers.MonitoringTimeStart;
+            time_sec = Timers.MonitoringTimeTs - diff_sec;
             if (time_sec < min_value_sec)
             {
                 min_value_sec = time_sec;

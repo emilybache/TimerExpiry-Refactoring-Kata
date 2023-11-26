@@ -31,7 +31,7 @@ public class TimerExpiryVerifyNUnitTest
     {
         var beforeState = PrintBeforeState();
         
-        timerConfig.how_long_until_next_timer_expiry(timerConfig, now_sec, out min_value_ms);
+        timerConfig.how_long_until_next_timer_expiry(now_sec, out min_value_ms);
         
         var testState = PrintTestState();
         return Verifier.Verify(beforeState + testState);
@@ -45,7 +45,7 @@ public class TimerExpiryVerifyNUnitTest
         timerConfig.operational_flags += (uint)OperationalFlags.ZB12Modified;
         var beforeState = PrintBeforeState();
         
-        timerConfig.how_long_until_next_timer_expiry(timerConfig, now_sec, out min_value_ms);
+        timerConfig.how_long_until_next_timer_expiry(now_sec, out min_value_ms);
         
         var testState = PrintTestState();
         return Verifier.Verify(beforeState + testState);
@@ -77,7 +77,7 @@ public class TimerExpiryVerifyNUnitTest
         timerConfig.Timers.MonitoringTimeStart = now_sec - 4;
         var beforeState = PrintBeforeState();
         
-        timerConfig.how_long_until_next_timer_expiry(timerConfig, now_sec, out min_value_ms);
+        timerConfig.how_long_until_next_timer_expiry(now_sec, out min_value_ms);
         
         var testState = PrintTestState();
         return Verifier.Verify(beforeState + testState);
