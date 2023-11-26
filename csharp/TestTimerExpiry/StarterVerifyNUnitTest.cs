@@ -22,7 +22,7 @@ public class TimerExpiryVerifyNUnitTest
         timerConfig.Timers = new Timers();
         timerConfig.Timers.Duration = new Duration();
 
-        timerConfig.how_long_until_next_timer_expiry(timerConfig, now_sec, out min_value_ms);
+        timerConfig.how_long_until_next_timer_expiry(now_sec, out min_value_ms);
         var sb = new StringBuilder();
         sb.Append(TimerConfigPrinter.PrintTimerConfig(timerConfig));
         sb.AppendLine("NEXT_TIMER: ");
