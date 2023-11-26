@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2003
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimerExpiry", "TimerExpiry\TimerExpiry.csproj", "{AEE68BE5-D906-4521-B9B6-2D199A344BBA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestTimerExpiry", "TestTimerExpiry\TestTimerExpiry.csproj", "{2173A33B-BE40-4949-B6F0-D8C0C7FA0716}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AEE68BE5-D906-4521-B9B6-2D199A344BBA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AEE68BE5-D906-4521-B9B6-2D199A344BBA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AEE68BE5-D906-4521-B9B6-2D199A344BBA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AEE68BE5-D906-4521-B9B6-2D199A344BBA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2173A33B-BE40-4949-B6F0-D8C0C7FA0716}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2173A33B-BE40-4949-B6F0-D8C0C7FA0716}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2173A33B-BE40-4949-B6F0-D8C0C7FA0716}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2173A33B-BE40-4949-B6F0-D8C0C7FA0716}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8ECAAFB5-F143-48AF-B9E1-F4AAB2256FF6}
+	EndGlobalSection
+EndGlobal
